@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../Get2Travel/.idea/Get2Travel.iml" filepath="$PROJECT_DIR$/../Get2Travel/.idea/Get2Travel.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/HMM.iml" filepath="$PROJECT_DIR$/.idea/HMM.iml" />
+    </modules>
+  </component>
+</project>
