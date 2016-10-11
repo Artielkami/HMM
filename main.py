@@ -4,56 +4,62 @@ from viterbi import Viterbi
 from Tkinter import *
 import app as app
 
-states = ('Healthy', 'Fever')
-observations = ('normal', 'cold', 'dizzy')
-start_probability = {'Healthy': 0.6, 'Fever': 0.4}
+# states = ('Healthy', 'Fever')
+# observations = ('normal', 'cold', 'dizzy')
+# start_probability = {'Healthy': 0.6, 'Fever': 0.4}
+# transition_probability = {
+#     'Healthy': {'Healthy': 0.7, 'Fever': 0.3},
+#     'Fever': {'Healthy': 0.4, 'Fever': 0.6}
+# }
+# emission_probability = {
+#     'Healthy': {'normal': 0.5, 'cold': 0.4, 'dizzy': 0.1},
+#     'Fever': {'normal': 0.1, 'cold': 0.3, 'dizzy': 0.6}
+# }
+states = ('Price_up', 'Price_keep', 'Price_down')
+observations = ['DS_increase']
+start_probability = {'Price_up': 0.33, 'Price_keep': 0.26, 'Price_down': 0.41}
 transition_probability = {
-    'Healthy': {'Healthy': 0.7, 'Fever': 0.3},
-    'Fever': {'Healthy': 0.4, 'Fever': 0.6}
+    'Price_up': {'Price_up': 0.2, 'Price_keep': 0.3, 'Price_down': 0.5},
+    'Price_keep': {'Price_up': 0.3, 'Price_keep': 0.3, 'Price_down': 0.4},
+    'Price_down': {'Price_up': 0.3, 'Price_keep': 0.4, 'Price_down': 0.3}
 }
 emission_probability = {
-    'Healthy': {'normal': 0.5, 'cold': 0.4, 'dizzy': 0.1},
-    'Fever': {'normal': 0.1, 'cold': 0.3, 'dizzy': 0.6}
+    'Price_up': {'DS_increase': 0.43, 'DS_decrease': 0.57},
+    'Price_keep': {'DS_increase': 0.5, 'DS_decrease': 0.5},
+    'Price_down': {'DS_increase': 0.65, 'DS_decrease': 0.35}
 }
-#
-# viterbi = Viterbi()
-# viterbi.viterbi(observations,
-#                 states,
-#                 start_probability,
-#                 transition_probability,
-#                 emission_probability)
 
-# root = Tk()
-
-# frame = Frame(root, height=300, width=600)
-# frame.pack()
-#
-# bottomframe = Frame(root)
-# bottomframe.pack( side = BOTTOM )
-#
-# redbutton = Button(frame, text="Red", fg="red")
-# redbutton.pack( side = LEFT)
-#
-# greenbutton = Button(frame, text="Brown", fg="brown")
-# greenbutton.pack( side = LEFT )
-#
-# bluebutton = Button(frame, text="Blue", fg="blue")
-# bluebutton.pack( side = LEFT )
-#
-# blackbutton = Button(bottomframe, text="Black", fg="black")
-# blackbutton.pack( side = BOTTOM)
-# root.title('HMM Algorithm')
-# root.geometry("600x300")
-#
-# root.mainloop()
-print('--------- STARTING ----------')
+print('----------- STARTED ------------')
 TITLE = 'HMM Simulator Application'
 GEOMETRY = ''
-setting = {
+
+# ---- variable -----
+old_status = 'Price_up'
+old_prob = 0.40
+old_DS = 100
+new_DS = 90
+old_CR = 30
+new_CR = 32
+old_price = 200
+
+# ----- setting -----
+_setting = {
     'title': TITLE,
     'geometry': GEOMETRY
 }
-ap = app.Dialog(setting=setting)
+
+_data = {
+    'old_status': old_status,
+    'old_prob': old_prob,
+    'old_DS': old_DS,
+    'new_DS': new_DS,
+    'old_CR': old_CR,
+    'new_CR': new_CR,
+    'old_price': old_price
+}
+# main app
+
+ap = app.Dialog(setting=_setting, data=_data)
 # ap.title = TITLE
 # ap.geometry = setting['geometry']
 ap.mainloop()

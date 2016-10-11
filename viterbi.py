@@ -4,6 +4,24 @@
 
 class Viterbi:
     """use for test machinic"""
+    def __init__(self):
+        print '--- class viterbi has been called ---'
+
+    def calculate(self, obs, states, start_p, trans_p, emit_p):
+        V = [{}]
+        for st in states:
+            V[0][st] = {"prob": start_p[st], "prev": None}
+        V.append({})
+        for st in states:
+            max_tr_prob = max(V[0][prev_st]["prob"] * trans_p[prev_st][st] for prev_st in states)
+            for prev_st in states:
+                if V[0][prev_st]["prob"] * trans_p[prev_st][st] == max_tr_prob:
+                    max_prob = max_tr_prob * emit_p[st][obs[0]]
+                    V[1][st] = {"prob": max_prob, "prev": prev_st}
+                    break
+        return V[1]
+
+
     def viterbi(self, obs, states, start_p, trans_p, emit_p):
         V = [{}]
         for st in states:
@@ -41,4 +59,4 @@ class Viterbi:
         # Print a table of steps from dictionary
         yield " ".join(("%12d" % i) for i in range(len(V)))
         for state in V[0]:
-            yield "%.7s: " % state + " ".join("%.7s" % ("%f" % v[state]["prob"]) for v in V)
+            yield "%.12s: " % state + " ".join("%.7s" % ("%f" % v[state]["prob"]) for v in V)
