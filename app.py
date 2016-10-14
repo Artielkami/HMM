@@ -25,7 +25,7 @@ class Dialog(tk.Tk):
         self.bottom_frame.grid(row=2, column=0, columnspan=2, sticky='we', padx=10, pady=5)
         # variable for calculate
         self.matrix_transit = [
-            [0.18, 0.33, 0.49],
+            [0.23, 0.32, 0.45],
             [0.27, 0.32, 0.41],
             [0.36, 0.38, 0.26]
         ]
@@ -45,8 +45,8 @@ class Dialog(tk.Tk):
         self.old_status = tk.StringVar(self.master)
         self.old_status.set(data['old_status'])
 
-        self.old_prob = tk.DoubleVar(self.master)
-        self.old_prob.set(data['old_prob'])
+        # self.old_prob = tk.DoubleVar(self.master)
+        # self.old_prob.set(data['old_prob'])
 
         self.old_DS = tk.IntVar(self.master)
         self.old_DS.set(data['old_DS'])
@@ -96,10 +96,11 @@ class Dialog(tk.Tk):
         start_probability = dict()
         for s in states:
             if s == self.old_status.get():
-                if self.old_prob.get() < 0.005:
-                    start_probability[s] = self.old_prob.get()*100
-                else:
-                    start_probability[s] = self.old_prob.get()
+                # if self.old_prob.get() < 0.005:
+                #     start_probability[s] = self.old_prob.get()*100
+                # else:
+                #     start_probability[s] = self.old_prob.get()
+                start_probability[s] = 1
             else:
                 start_probability[s] = 0
         tran_prob = {
@@ -137,7 +138,7 @@ class Dialog(tk.Tk):
         old_ds = self.old_DS.get()
         delta = new_ds - old_ds
         base = old_ds + 1
-        x = float(old_ds+2*abs(delta)+1)/float(new_ds+1)
+        x = float(old_ds+1.4*abs(delta)+1)/float(new_ds+1)
         h = math.log(x, base)
         old_price = self.old_price.get()
         new_price = 0
@@ -235,7 +236,8 @@ class Dialog(tk.Tk):
         b = tk.Button(self.frame, text="In transit", bg="green", height=7, padx=5, width=10,
                       activebackground='blue', command=self._get_value_transit)
         b.grid(row=0, column=0)
-        b = tk.Button(self.frame, text="Read data", bg="yellow", height=7, width=10, padx=5, activebackground='blue')
+        b = tk.Button(self.frame, text="Read data", bg="yellow", height=7, width=10, padx=5,
+                      activebackground='blue', command=self.import_doto)
         b.grid(row=0, column=1)
         b = tk.Button(self.frame, text="In emission", bg="green", height=7, width=10, padx=5,
                       activebackground='blue', command=self._get_value_emission)
@@ -254,21 +256,21 @@ class Dialog(tk.Tk):
         h.grid(row=1, column=0)
 
         # 2
-        w = tk.Label(self.frame, text="Old probability", fg="blue", justify=tk.LEFT)
-        w.grid(row=0, column=1)
-        h = tk.Entry(self.frame, width=17, textvariable=self.old_prob)
-        h.grid(row=1, column=1)
+        # w = tk.Label(self.frame, text="Old probability", fg="blue", justify=tk.LEFT)
+        # w.grid(row=0, column=1)
+        # h = tk.Entry(self.frame, width=17, textvariable=self.old_prob)
+        # h.grid(row=1, column=1)
 
         # 3
         w = tk.Label(self.frame, text="Old DS", fg="blue", justify=tk.LEFT)
-        w.grid(row=0, column=2)
+        w.grid(row=0, column=1)
         h = tk.Entry(self.frame, width=17, textvariable=self.old_DS)
-        h.grid(row=1, column=2)
+        h.grid(row=1, column=1)
         # 4
         w = tk.Label(self.frame, text="New DS", fg="blue", justify=tk.LEFT)
-        w.grid(row=0, column=3)
+        w.grid(row=0, column=2)
         h = tk.Entry(self.frame, width=17, textvariable=self.new_DS)
-        h.grid(row=1, column=3)
+        h.grid(row=1, column=2)
         # 5
         w = tk.Label(self.frame, text="Old CR", fg="blue", justify=tk.LEFT)
         w.grid(row=2, column=0)
@@ -299,55 +301,88 @@ class Dialog(tk.Tk):
     def import_transit_prob(self):
         self.import_prob('TRANSIT_PROBABILITY')
 
+    def import_doto(self):
+        file = askopenfilename()
+        if not file:
+            return False
+        with open(file, 'r') as f:
+            try:
+                data = Yaml.load(f)
+                if data['namespace'] and data['namespace'] == 'data_log':
+                    self.old_status.set(data['old_status'])
+                    self.old_price.set(data['old_price'])
+                    self.old_DS.set(data['old_ds'])
+                    self.old_CR.set(data['old_cr'])
+                    self.new_CR.set(data['new_cr'])
+                    self.new_DS.set(data['new_ds'])
+                    # self.old_prob.set(data['old_prob'])
+                    tkmsg.showinfo('Success', 'Import data success !')
+                    return True
+                tkmsg.showerror('Error', 'Data not correct the format, please check !')
+                return False
+            except:
+                tkmsg.showerror('Error', 'Please import right format file .yml !')
+                return False
+
     def import_prob(self, section):
         file = askopenfilename()
         if not file:
             return False
         with open(file, 'r') as f:
-            config = Yaml.load(f)
-            if section == 'TRANSIT_PROBABILITY':
-                for x in range(0, 9, 1):
-                    self.matrix_tp[x].delete(0, tk.END)
-                self.matrix_transit[0][0] = tmp = config[section]['price_up']['price_up']
-                self.matrix_tp[0].insert(0, tmp)
-                self.matrix_transit[0][1] = tmp = config[section]['price_up']['price_keep']
-                self.matrix_tp[1].insert(0, tmp)
-                self.matrix_transit[0][2] = tmp = config[section]['price_up']['price_down']
-                self.matrix_tp[2].insert(0, tmp)
-                self.matrix_transit[1][0] = tmp = config[section]['price_keep']['price_up']
-                self.matrix_tp[3].insert(0, tmp)
-                self.matrix_transit[1][1] = tmp = config[section]['price_keep']['price_keep']
-                self.matrix_tp[4].insert(0, tmp)
-                self.matrix_transit[1][2] = tmp = config[section]['price_keep']['price_down']
-                self.matrix_tp[5].insert(0, tmp)
-                self.matrix_transit[2][0] = tmp = config[section]['price_down']['price_up']
-                self.matrix_tp[6].insert(0, tmp)
-                self.matrix_transit[2][1] = tmp = config[section]['price_down']['price_keep']
-                self.matrix_tp[7].insert(0, tmp)
-                self.matrix_transit[2][2] = tmp = config[section]['price_down']['price_down']
-                self.matrix_tp[8].insert(0, tmp)
+            try:
+                config = Yaml.load(f)
+                if not config['namespace'] or config['namespace'] != 'probability':
+                    tkmsg.showerror('Error', 'Data not correct the format, please check !')
+                    return False
+                if section == 'TRANSIT_PROBABILITY':
+                    for x in range(0, 9, 1):
+                        self.matrix_tp[x].delete(0, tk.END)
+                    self.matrix_transit[0][0] = tmp = config[section]['price_up']['price_up']
+                    self.matrix_tp[0].insert(0, tmp)
+                    self.matrix_transit[0][1] = tmp = config[section]['price_up']['price_keep']
+                    self.matrix_tp[1].insert(0, tmp)
+                    self.matrix_transit[0][2] = tmp = config[section]['price_up']['price_down']
+                    self.matrix_tp[2].insert(0, tmp)
+                    self.matrix_transit[1][0] = tmp = config[section]['price_keep']['price_up']
+                    self.matrix_tp[3].insert(0, tmp)
+                    self.matrix_transit[1][1] = tmp = config[section]['price_keep']['price_keep']
+                    self.matrix_tp[4].insert(0, tmp)
+                    self.matrix_transit[1][2] = tmp = config[section]['price_keep']['price_down']
+                    self.matrix_tp[5].insert(0, tmp)
+                    self.matrix_transit[2][0] = tmp = config[section]['price_down']['price_up']
+                    self.matrix_tp[6].insert(0, tmp)
+                    self.matrix_transit[2][1] = tmp = config[section]['price_down']['price_keep']
+                    self.matrix_tp[7].insert(0, tmp)
+                    self.matrix_transit[2][2] = tmp = config[section]['price_down']['price_down']
+                    self.matrix_tp[8].insert(0, tmp)
 
-                for x in range(0, 6, 1):
-                    self.matrix_ep[x].delete(0, tk.END)
-                self.matrix_emission[0][0] = tmp = config['emission_probability']['price_up']['ds_increase']
-                self.matrix_ep[0].insert(0, tmp)
-                self.matrix_emission[0][1] = tmp = config['emission_probability']['price_up']['ds_decrease']
-                self.matrix_ep[1].insert(0, tmp)
-                self.matrix_emission[1][0] = tmp = config['emission_probability']['price_keep']['ds_increase']
-                self.matrix_ep[2].insert(0, tmp)
-                self.matrix_emission[1][1] = tmp = config['emission_probability']['price_keep']['ds_decrease']
-                self.matrix_ep[3].insert(0, tmp)
-                self.matrix_emission[2][0] = tmp = config['emission_probability']['price_down']['ds_increase']
-                self.matrix_ep[4].insert(0, tmp)
-                self.matrix_emission[2][1] = tmp = config['emission_probability']['price_down']['ds_decrease']
-                self.matrix_ep[5].insert(0, tmp)
-            # print self.matrix_transit
+                    for x in range(0, 6, 1):
+                        self.matrix_ep[x].delete(0, tk.END)
+                    self.matrix_emission[0][0] = tmp = config['emission_probability']['price_up']['ds_increase']
+                    self.matrix_ep[0].insert(0, tmp)
+                    self.matrix_emission[0][1] = tmp = config['emission_probability']['price_up']['ds_decrease']
+                    self.matrix_ep[1].insert(0, tmp)
+                    self.matrix_emission[1][0] = tmp = config['emission_probability']['price_keep']['ds_increase']
+                    self.matrix_ep[2].insert(0, tmp)
+                    self.matrix_emission[1][1] = tmp = config['emission_probability']['price_keep']['ds_decrease']
+                    self.matrix_ep[3].insert(0, tmp)
+                    self.matrix_emission[2][0] = tmp = config['emission_probability']['price_down']['ds_increase']
+                    self.matrix_ep[4].insert(0, tmp)
+                    self.matrix_emission[2][1] = tmp = config['emission_probability']['price_down']['ds_decrease']
+                    self.matrix_ep[5].insert(0, tmp)
+                    tkmsg.showinfo('Success', 'Import data success !')
+                    return True
+            except:
+                tkmsg.showerror('Error', 'Please import right format file .yml !')
+                return False
+        # print self.matrix_transit
         # with open('config.yml', 'w') as configfile:
         #     config.write(configfile)
 
         print '[-- SET INI FILE COMPLETED --]'
 
     def About(self):
+        tkmsg.showinfo('About', 'Just a simple simulate for auto price')
         print "This is a simple example of a menu"
 
     def answer(self):

@@ -1,0 +1,7 @@
+namespace: data_log
+old_status: Price_up
+old_ds: 100
+new_ds: 110
+old_cr: 31
+new_cr: 32
+old_price: 112
