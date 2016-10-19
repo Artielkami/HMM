@@ -1,9 +1,17 @@
-import Tkinter as tk
+try:
+    import Tkinter as tk
+    import tkFont
+except ImportError:
+    import tkinter as tk
+    import tkinter.font as tkFont
+import sys
 import tkMessageBox as tkmsg
 from tkFileDialog import askopenfilename
 from viterbi import *
 import math as math
 import yaml as Yaml
+from sup import my_calendar as Cal
+# import calendar
 
 
 class Dialog(tk.Tk):
@@ -15,14 +23,18 @@ class Dialog(tk.Tk):
         self.geometry(setting['geometry'])
         self.vcmd_float = (self.register(self._on_validate_float),
                            '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W')
+
+        # frame
+        self.form_frame = tk.LabelFrame(master=self.master, text='Form master', **kwargs)
+        self.form_frame.grid(row=0, column=0, columnspan=2, sticky='we', padx=10, pady=5)
         self.left_frame = tk.Frame(master=self.master, **kwargs)
-        self.left_frame.grid(row=0, column=0)
+        self.left_frame.grid(row=1, column=0)
         self.right_frame = tk.Frame(master=self.master, **kwargs)
-        self.right_frame.grid(row=0, column=1, sticky=tk.NW)
+        self.right_frame.grid(row=1, column=1, sticky=tk.NW)
         self.input_frame = tk.Frame(master=self.master, **kwargs)
-        self.input_frame.grid(row=1, column=0, sticky=tk.NW, columnspan=2)
+        self.input_frame.grid(row=2, column=0, sticky=tk.NW, columnspan=2)
         self.bottom_frame = tk.LabelFrame(master=self.master, text='Result', height=250, **kwargs)
-        self.bottom_frame.grid(row=2, column=0, columnspan=2, sticky='we', padx=10, pady=5)
+        self.bottom_frame.grid(row=3, column=0, columnspan=2, sticky='we', padx=10, pady=5)
         # variable for calculate
         self.matrix_transit = [
             [0.23, 0.32, 0.45],
@@ -39,6 +51,18 @@ class Dialog(tk.Tk):
         # print self.matrix_transit
         # print self.matrix_emission
         # print '-----------'
+        self.port_dep = tk.StringVar(self.master)
+        self.port_dep.set('TYOA-sky')
+
+        self.port_des = tk.StringVar(self.master)
+        self.port_des.set('ISG-sky or MMY-sky')
+
+        self.day_out = tk.StringVar(self.master)
+        self.day_out.set('2016-12-09')
+
+        self.day_in = tk.StringVar(self.master)
+        # self.day_in.set('')
+
         self.result_text = tk.StringVar(self.master)
         self.result_text.set('Ready for calculation')
 
@@ -62,7 +86,10 @@ class Dialog(tk.Tk):
 
         self.old_price = tk.DoubleVar(self.master)
         self.old_price.set(data['old_price'])
-        # GUI
+
+        # GUI render
+
+        self._master_frame(self.form_frame)
         self._TpFrame(self.left_frame)
         self._TeFrame(self.left_frame)
         self._ImportButton(self.right_frame)
@@ -286,6 +313,36 @@ class Dialog(tk.Tk):
         w.grid(row=2, column=2)
         h = tk.Entry(self.frame, width=17, textvariable=self.old_price)
         h.grid(row=3, column=2)
+
+    def _master_frame(self, master=None, **kwargs):
+        # Departure port, TYOA-sky
+        w = tk.Label(master, text="Departure", fg="blue", justify=tk.LEFT)
+        w.grid(row=0, column=0)
+        h = tk.Entry(master, width=17, textvariable=self.port_dep)
+        h.grid(row=0, column=1, columnspan=2)
+        # Destination port: MMY-sky | ISG-sky
+        w = tk.Label(master, text="Destination", fg="blue", justify=tk.LEFT)
+        w.grid(row=0, column=6)
+        h = tk.Entry(master, width=17, textvariable=self.port_des)
+        h.grid(row=0, column=7, columnspan=2)
+        # Outward day
+        w = tk.Label(master, text="Out", fg="green", justify=tk.LEFT)
+        w.grid(row=1, column=0)
+        h = tk.Entry(master, width=17, textvariable=self.day_out)
+        h.grid(row=1, column=1, columnspan=2)
+        # Return day - not require
+        w = tk.Label(master, text="In", fg="red", justify=tk.LEFT)
+        w.grid(row=1, column=6)
+        h = tk.Entry(master, width=17, textvariable=self.day_in)
+        h.grid(row=1, column=7, columnspan=2)
+
+        # can't use calender because calender module not exist, and idk why.
+        # ttkcal = Cal.MyDatePicker(format_str='%02d-%s-%s')
+        ttkcal = tk.Button(master, text='Date', command=self.make_date)
+        ttkcal.grid(row=2, sticky='we')
+
+    def make_date(self):
+        Cal.MyDatePicker(widget=self.day_out, format_str='%s-%02d-%02d')
 
     def _ResultFrame(self, master=None, **kwargs):
         rs = tk.Label(master, textvariable=self.result_text, justify=tk.LEFT)
