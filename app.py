@@ -7,10 +7,18 @@ except ImportError:
 import sys
 import tkMessageBox as tkmsg
 from tkFileDialog import askopenfilename
+from tkFileDialog import askdirectory
+import ConfigParser
 from viterbi import *
 import math as math
 import yaml as Yaml
 from sup import my_calendar as Cal
+import read_data_price as rdp
+import time
+
+import logging
+logging.basicConfig(level=logging.DEBUG,
+                    format='APP: %(message)s')
 # import calendar
 
 
@@ -52,16 +60,18 @@ class Dialog(tk.Tk):
         # print self.matrix_emission
         # print '-----------'
         self.port_dep = tk.StringVar(self.master)
-        self.port_dep.set('TYOA-sky')
+        self.port_dep.set('TYOA')
 
         self.port_des = tk.StringVar(self.master)
-        self.port_des.set('ISG-sky or MMY-sky')
+        self.port_des.set('ISG or MMY')
 
         self.day_out = tk.StringVar(self.master)
         self.day_out.set('2016-12-09')
 
         self.day_in = tk.StringVar(self.master)
         # self.day_in.set('')
+
+        # self.log_text = None
 
         self.result_text = tk.StringVar(self.master)
         self.result_text.set('Ready for calculation')
@@ -96,16 +106,37 @@ class Dialog(tk.Tk):
         self._InputFrame(self.input_frame)
         self._ResultFrame(self.bottom_frame)
 
+        # Read setting
+        self._read_setting()
+        # --------------------------------------------------------------------------------------------------------------
+        #
+        #   MENU
+        #
+        # --------------------------------------------------------------------------------------------------------------
         menu = tk.Menu(self)
         self.config(menu=menu)
+
+        # File menu
+        # Import config, Import data
         filemenu = tk.Menu(menu, tearoff=0)
         menu.add_cascade(label="File", menu=filemenu)
         # filemenu.add_command(label="New", command=self.NewFile)
         # filemenu.add_command(label="Open...", command=self.OpenFile)
         filemenu.add_command(label='Import config', command=self.import_transit_prob)
+        filemenu.add_command(label='Change data root folder', command=self._write_setting)
         filemenu.add_separator()
         filemenu.add_command(label="Exit", command=self.quit)
 
+        # Tool menu
+        # Clear
+        toolmenu = tk.Menu(menu, tearoff=0)
+        menu.add_cascade(label='Tool', menu=toolmenu)
+        # clear log result
+        toolmenu.add_command(label='Clear log', command=self.clear_log_result)
+        toolmenu.add_command(label='Get live data', command=self.get_live_data)
+
+        # Help
+        # Help, About
         helpmenu = tk.Menu(menu, tearoff=0)
         menu.add_cascade(label="Help", menu=helpmenu)
         helpmenu.add_command(label="About...", command=self.About)
@@ -317,36 +348,45 @@ class Dialog(tk.Tk):
     def _master_frame(self, master=None, **kwargs):
         # Departure port, TYOA-sky
         w = tk.Label(master, text="Departure", fg="blue", justify=tk.LEFT)
-        w.grid(row=0, column=0)
+        w.grid(row=0, column=0, columnspan=2, padx=10)
         h = tk.Entry(master, width=17, textvariable=self.port_dep)
-        h.grid(row=0, column=1, columnspan=2)
+        h.grid(row=0, column=2, columnspan=2)
         # Destination port: MMY-sky | ISG-sky
         w = tk.Label(master, text="Destination", fg="blue", justify=tk.LEFT)
-        w.grid(row=0, column=6)
+        w.grid(row=0, column=6, columnspan=2, padx=10)
         h = tk.Entry(master, width=17, textvariable=self.port_des)
-        h.grid(row=0, column=7, columnspan=2)
+        h.grid(row=0, column=8, columnspan=2)
         # Outward day
         w = tk.Label(master, text="Out", fg="green", justify=tk.LEFT)
         w.grid(row=1, column=0)
         h = tk.Entry(master, width=17, textvariable=self.day_out)
-        h.grid(row=1, column=1, columnspan=2)
+        h.grid(row=1, column=2, columnspan=2)
         # Return day - not require
         w = tk.Label(master, text="In", fg="red", justify=tk.LEFT)
         w.grid(row=1, column=6)
         h = tk.Entry(master, width=17, textvariable=self.day_in)
-        h.grid(row=1, column=7, columnspan=2)
+        h.grid(row=1, column=8, columnspan=2)
 
         # can't use calender because calender module not exist, and idk why.
         # ttkcal = Cal.MyDatePicker(format_str='%02d-%s-%s')
-        ttkcal = tk.Button(master, text='Date', command=self.make_date)
-        ttkcal.grid(row=2, sticky='we')
+        cal_out = tk.Button(master, text='Date', command=self.make_date_out)
+        cal_out.grid(row=1, column=1, sticky='we')
 
-    def make_date(self):
+        cal_in = tk.Button(master, text='Date', command=self.make_date_in)
+        cal_in.grid(row=1, column=7, sticky='we')
+
+    def make_date_out(self):
         Cal.MyDatePicker(widget=self.day_out, format_str='%s-%02d-%02d')
+
+    def make_date_in(self):
+        Cal.MyDatePicker(widget=self.day_in, format_str='%s-%02d-%02d')
 
     def _ResultFrame(self, master=None, **kwargs):
         rs = tk.Label(master, textvariable=self.result_text, justify=tk.LEFT)
         rs.pack(side=tk.LEFT)
+
+    def clear_log_result(self):
+        self.result_text.set('')
 
     def NewFile(self):
         print "New File!"
@@ -362,6 +402,8 @@ class Dialog(tk.Tk):
         file = askopenfilename()
         if not file:
             return False
+        # print file
+        # return False
         with open(file, 'r') as f:
             try:
                 data = Yaml.load(f)
@@ -380,6 +422,26 @@ class Dialog(tk.Tk):
             except:
                 tkmsg.showerror('Error', 'Please import right format file .yml !')
                 return False
+
+    @staticmethod
+    def _write_setting():
+        dir = askdirectory()
+        print dir
+        config = ConfigParser.ConfigParser()
+        config.read('setting.cfg')
+        if config.has_section('PATH'):
+            config.set('PATH', 'root_folder', dir)
+            # print '- change `root_folder` value -'
+            logging.debug('- change `root_folder` value -')
+        else:
+            config.add_section('PATH')
+            config.set('PATH', 'root_folder', dir)
+            # print '- section `PATH` is not exist -'
+            logging.debug('- section `PATH` is not exist -')
+            # print '- Add section `PATH` and set `root_folder` value'
+            logging.debug('- Add section `PATH` and set `root_folder` value')
+        with open('setting.cfg', 'wb') as configfile:
+            config.write(configfile)
 
     def import_prob(self, section):
         file = askopenfilename()
@@ -450,4 +512,46 @@ class Dialog(tk.Tk):
             tkmsg.showwarning('Yes', 'Not yet implemented')
         else:
             tkmsg.showinfo('No', 'Quit has been cancelled')
+
+    # --------------------
+    def _read_setting(self):
+        config = ConfigParser.ConfigParser()
+        data = config.read('setting.cfg')
+        # raise error if missing file setting
+        if not len(data):
+            logging.debug('Missing file `setting.cfg` !')
+            self.show_error('Missing File', '`setting.cfg` is missing')
+            return False
+        if config.has_section('PATH'):
+            self.data_roor_folder = config.get('PATH', 'root_folder')
+            logging.debug('Get root folder success')
+            return True
+
+        return False
+
+    def show_error(self, error_tittle, message):
+        tkmsg.showerror(title=error_tittle, message=message)
+
+    def get_live_data(self):
+        day = self.day_out.get()
+        org = self.port_dep.get() + '-sky'
+        des = self.port_des.get() + '-sky'
+        print des
+        if org != 'TYOA-sky':
+            logging.debug('- wrong origin_place -')
+            self.show_error('Input Data Error', 'Please check input code of `Departure`')
+            return False
+        if des != 'MMY-sky' and des != 'ISG-sky':
+            logging.debug('- wrong destination_place -')
+            self.show_error('Input Data Error', 'Please check input code of `Destination`')
+            return False
+        create_session = rdp.create_session(day=day, org=org, des=des)
+        logging.debug('pause for getting session')
+        time.sleep(1.2)
+        logging.debug('create session complete')
+        if create_session['status'] == 0:
+            self.show_error('Error', create_session['message'])
+            return False
+        session = create_session['session']
+        json_data = rdp.get_live_data(path=self.data_roor_folder)
 

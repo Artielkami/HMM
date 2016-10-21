@@ -3,6 +3,10 @@
 from viterbi import Viterbi
 from Tkinter import *
 import app as app
+import ConfigParser
+import logging
+logging.basicConfig(level=logging.DEBUG,
+                    format='Main: %(message)s')
 
 # states = ('Healthy', 'Fever')
 # observations = ('normal', 'cold', 'dizzy')
@@ -29,7 +33,7 @@ emission_probability = {
     'Price_down': {'DS_increase': 0.65, 'DS_decrease': 0.35}
 }
 
-print('----------- STARTED ------------')
+logging.debug('----------- STARTED ------------')
 TITLE = 'HMM Simulator Application'
 GEOMETRY = ''
 
@@ -59,8 +63,9 @@ _data = {
 }
 # main app
 
-ap = app.Dialog(setting=_setting, data=_data)
-# ap.title = TITLE
-# ap.geometry = setting['geometry']
-ap.mainloop()
-print('--------- RUN SUCCESS ----------')
+# ap = app.Dialog(setting=_setting, data=_data)
+# ap.mainloop()
+config = ConfigParser.ConfigParser()
+config.read('setting.cfg')
+
+logging.debug('--------- RUN SUCCESS ----------')
