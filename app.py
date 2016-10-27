@@ -18,7 +18,7 @@ import time
 
 import logging
 logging.basicConfig(level=logging.DEBUG,
-                    format='APP: %(message)s')
+                    format='[APP]: %(message)s')
 # import calendar
 
 
@@ -79,6 +79,8 @@ class Dialog(tk.Tk):
         self.old_status = tk.StringVar(self.master)
         self.old_status.set(data['old_status'])
 
+        self.new_state = None
+
         # self.old_prob = tk.DoubleVar(self.master)
         # self.old_prob.set(data['old_prob'])
 
@@ -108,6 +110,7 @@ class Dialog(tk.Tk):
 
         # Read setting
         self._read_setting()
+        self.session = None
         # --------------------------------------------------------------------------------------------------------------
         #
         #   MENU
@@ -134,6 +137,7 @@ class Dialog(tk.Tk):
         # clear log result
         toolmenu.add_command(label='Clear log', command=self.clear_log_result)
         toolmenu.add_command(label='Get live data', command=self.get_live_data)
+        toolmenu.add_command(label='Test', command=self.test)
 
         # Help
         # Help, About
@@ -189,21 +193,23 @@ class Dialog(tk.Tk):
             if data["prob"] == max_prob:
                 # opt.append(st)
                 state = st
+                self.new_state = st
                 break
         text += '\n=> Next states will be : ' + state
 
         new_ds = self.new_DS.get()
         old_ds = self.old_DS.get()
         delta = new_ds - old_ds
-        base = old_ds + 1
-        x = float(old_ds+1.4*abs(delta)+1)/float(new_ds+1)
+        base = new_ds + 1
+        # x = float(old_ds+1.4*abs(delta)+1)/float(new_ds+1)
+        x = float((new_ds+1)/(old_ds+1))
         h = math.log(x, base)
         old_price = self.old_price.get()
         new_price = 0
         if state == 'Price_down':
-            new_price = old_price*(1-h)
+            new_price = old_price*(1-abs(h))
         elif state == 'Price_up':
-            new_price = old_price*(1+h)
+            new_price = old_price*(1+abs(h))
         else:
             new_price = old_price
         text += '\n' + str(new_price)
@@ -552,6 +558,9 @@ class Dialog(tk.Tk):
         if create_session['status'] == 0:
             self.show_error('Error', create_session['message'])
             return False
-        session = create_session['session']
-        json_data = rdp.get_live_data(path=self.data_roor_folder)
+        self.session = create_session['session']
+        logging.debug(self.session)
+        # json_data = rdp.get_live_data(path=self.data_roor_folder)
 
+    def test(self):
+        rdp.get_live_data(self.data_roor_folder, self.session, self.day_out.get())

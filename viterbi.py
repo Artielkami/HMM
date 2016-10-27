@@ -21,7 +21,6 @@ class Viterbi:
                     break
         return V[1]
 
-
     def viterbi(self, obs, states, start_p, trans_p, emit_p):
         V = [{}]
         for st in states:

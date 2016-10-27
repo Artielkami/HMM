@@ -1,5 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+from datetime import datetime
+
 from viterbi import Viterbi
 from Tkinter import *
 import app as app
@@ -9,7 +11,8 @@ logging.basicConfig(level=logging.DEBUG,
                     format='Main: %(message)s')
 
 # states = ('Healthy', 'Fever')
-# observations = ('normal', 'cold', 'dizzy')
+# observations = ('normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal',
+#                 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal')
 # start_probability = {'Healthy': 0.6, 'Fever': 0.4}
 # transition_probability = {
 #     'Healthy': {'Healthy': 0.7, 'Fever': 0.3},
@@ -19,6 +22,9 @@ logging.basicConfig(level=logging.DEBUG,
 #     'Healthy': {'normal': 0.5, 'cold': 0.4, 'dizzy': 0.1},
 #     'Fever': {'normal': 0.1, 'cold': 0.3, 'dizzy': 0.6}
 # }
+# v = Viterbi()
+# v.viterbi(observations, states, start_probability, transition_probability, emission_probability)
+
 states = ('Price_up', 'Price_keep', 'Price_down')
 observations = ['DS_increase']
 start_probability = {'Price_up': 0.33, 'Price_keep': 0.26, 'Price_down': 0.41}
@@ -63,9 +69,11 @@ _data = {
 }
 # main app
 
-# ap = app.Dialog(setting=_setting, data=_data)
-# ap.mainloop()
-config = ConfigParser.ConfigParser()
-config.read('setting.cfg')
+ap = app.Dialog(setting=_setting, data=_data)
+ap.mainloop()
+
+# config = ConfigParser.ConfigParser()
+# config.read('setting.cfg')
+# print datetime.now().strftime('%Y%m%d_%H%M%S')
 
 logging.debug('--------- RUN SUCCESS ----------')
