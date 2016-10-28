@@ -46,7 +46,7 @@ class Dialog(tk.Tk):
         # variable for calculate
         self.matrix_transit = [
             [0.23, 0.32, 0.45],
-            [0.27, 0.32, 0.41],
+            [0.30, 0.30, 0.40],
             [0.36, 0.38, 0.26]
         ]
         self.matrix_emission = [
@@ -136,7 +136,8 @@ class Dialog(tk.Tk):
         menu.add_cascade(label='Tool', menu=toolmenu)
         # clear log result
         toolmenu.add_command(label='Clear log', command=self.clear_log_result)
-        toolmenu.add_command(label='Get live data', command=self.get_live_data)
+        toolmenu.add_command(label='Create Session', command=self.get_live_data)
+        toolmenu.add_command(label='Get Data', command=self.get_data)
         toolmenu.add_command(label='Test', command=self.test)
 
         # Help
@@ -202,7 +203,7 @@ class Dialog(tk.Tk):
         delta = new_ds - old_ds
         base = new_ds + 1
         # x = float(old_ds+1.4*abs(delta)+1)/float(new_ds+1)
-        x = float((new_ds+1)/(old_ds+1))
+        x = (float(new_ds)+1)/(float(old_ds)+1)
         h = math.log(x, base)
         old_price = self.old_price.get()
         new_price = 0
@@ -538,6 +539,9 @@ class Dialog(tk.Tk):
     def show_error(self, error_tittle, message):
         tkmsg.showerror(title=error_tittle, message=message)
 
+    def show_info(self, title, message):
+        tkmsg.showinfo('No', 'Quit has been cancelled')
+
     def get_live_data(self):
         day = self.day_out.get()
         org = self.port_dep.get() + '-sky'
@@ -562,5 +566,19 @@ class Dialog(tk.Tk):
         logging.debug(self.session)
         # json_data = rdp.get_live_data(path=self.data_roor_folder)
 
-    def test(self):
+    def get_data(self):
         rdp.get_live_data(self.data_roor_folder, self.session, self.day_out.get())
+
+    def test(self):
+        h = rdp.calculation_price(self.new_DS.get(), self.old_DS.get())
+        path = self.data_roor_folder + '/20161209'
+        file = path + '/live_price/liveprice_20161021.json'
+        status = 0
+        if self.new_state == 'Price_up':
+            status = 1
+        if self.new_state == 'Price_down':
+            status = -1
+        if status != 0:
+            rdp.auto_price(path, file, status, h)
+            self.show_info('Success', 'Pricing has been done !')
+
