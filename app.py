@@ -201,7 +201,7 @@ class Dialog(tk.Tk):
         new_ds = self.new_DS.get()
         old_ds = self.old_DS.get()
         delta = new_ds - old_ds
-        base = new_ds + 1
+        base = delta*new_ds*old_ds
         # x = float(old_ds+1.4*abs(delta)+1)/float(new_ds+1)
         x = (float(new_ds)+1)/(float(old_ds)+1)
         h = math.log(x, base)
@@ -540,7 +540,7 @@ class Dialog(tk.Tk):
         tkmsg.showerror(title=error_tittle, message=message)
 
     def show_info(self, title, message):
-        tkmsg.showinfo('No', 'Quit has been cancelled')
+        tkmsg.showinfo(title, message)
 
     def get_live_data(self):
         day = self.day_out.get()
@@ -563,16 +563,30 @@ class Dialog(tk.Tk):
             self.show_error('Error', create_session['message'])
             return False
         self.session = create_session['session']
+        self.day_in.set(self.session)
         logging.debug(self.session)
+        return True
         # json_data = rdp.get_live_data(path=self.data_roor_folder)
 
     def get_data(self):
         rdp.get_live_data(self.data_roor_folder, self.session, self.day_out.get())
 
     def test(self):
+        self.calculate_prob()
+
+        if not self.get_live_data():
+            self.show_info('Fail', 'Fail on get live data!')
+            return False
+        # leep a bit after create session
+        # time.sleep(1.7)
+        file = rdp.get_live_data(self.data_roor_folder, self.session, self.day_out.get())
+        if not file:
+            self.show_error('Get data fail', 'Something wrong was happend, please don\'t smoke. GG !')
+            return False
         h = rdp.calculation_price(self.new_DS.get(), self.old_DS.get())
-        path = self.data_roor_folder + '/20161209'
-        file = path + '/live_price/liveprice_20161021.json'
+        date = self.day_out.get().replace('-', '')
+        path = self.data_roor_folder + date  # '/20161209'
+        # file = path + '/live_price/liveprice_20161021.json'
         status = 0
         if self.new_state == 'Price_up':
             status = 1
@@ -580,5 +594,7 @@ class Dialog(tk.Tk):
             status = -1
         if status != 0:
             rdp.auto_price(path, file, status, h)
+            logging.debug('Auto pricing finish !')
             self.show_info('Success', 'Pricing has been done !')
+            return True
 

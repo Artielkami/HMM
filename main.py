@@ -46,8 +46,8 @@ GEOMETRY = ''
 # ---- variable -----
 old_status = 'Price_keep'
 old_prob = 0.40
-old_DS = 100
-new_DS = 90
+old_DS = 1031
+new_DS = 1276
 old_CR = 30
 new_CR = 32
 old_price = 200

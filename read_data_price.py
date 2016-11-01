@@ -4,6 +4,7 @@ import requests
 import json
 import os
 from datetime import datetime
+import time
 import logging
 import math
 
@@ -35,7 +36,7 @@ def create_session(day, org, des, *args, **kwargs):
     # real: hi198240969190851351185584361476
     # test: prtl6749387986743898559646983194
     form = {
-        'apiKey': 'hi198240969190851351185584361476',
+        'apiKey': 'prtl6749387986743898559646983194',
         'currency': 'JPY',
         'locale': 'jp-JP',
         'country': 'JP',
@@ -50,7 +51,7 @@ def create_session(day, org, des, *args, **kwargs):
     }
     if r.status_code == 201:
         result['session'] = r.headers['Location']
-    elif r.status_code == 409:
+    elif r.status_code == 429:
         result['status'] = 0
         result['message'] = 'Please try later, too many request in last minute. Skycanner rejected access !'
     elif r.status_code == 403:
@@ -63,7 +64,7 @@ def create_session(day, org, des, *args, **kwargs):
 
 
 def get_live_data(path, url, day, *args, **kwargs):
-    url = url
+    # url = url
     # header = {
     #     'Content-Type': 'application/x-www-form-urlencoded',
     #     'Accept': 'application/json'
@@ -72,7 +73,7 @@ def get_live_data(path, url, day, *args, **kwargs):
     # test: prtl6749387986743898559646983194
 
     form = {
-        'apiKey': 'hi198240969190851351185584361476',
+        'apiKey': 'prtl6749387986743898559646983194',
     }
     try:
         folder = path + '/' + day.replace('-', '')
@@ -91,21 +92,24 @@ def get_live_data(path, url, day, *args, **kwargs):
         # create_time = datetime.now().strftime('%Y%m%d_%H%M%S')
 
         # get current day
-        # create_time = datetime.now().strftime('%Y%m%d')
-        create_time = '20161021'
+        create_time = datetime.now().strftime('%Y%m%d')
+        # create_time = '20161021'
         file_name = 'liveprice_' + create_time + '.json'
         data_file = folder + '/live_price/' + file_name
 
         # check if file exist or not
         if not os.path.exists(data_file):
-            response = requests.get(url=url, data=form)
+            response = requests.get(url=url, params=form)
+            time.sleep(1.2)
+            if response.status_code != 200:
+                return None
             with open(data_file, 'w') as _file:
-                json.dump(response, _file)
+                json.dump(json.loads(response.text), _file)
 
         # data_url = folder + '/live_price/' + 'liveprice_20161021.json'
         return data_file
-    except:
-        print 'Sum Ting Won'
+    except TypeError:
+        print 'Writing file error'
     return True
 
 
@@ -120,11 +124,18 @@ def auto_price(path, file, status, price_init, *args, **kwargs):
         # ong gia em sun rang, nhai trau cao = 2 nuu rang
         last_iter_min_price = 0
         for index, initerary in enumerate(json_data['Itineraries']):
+            print 'Iteratary %d is running' % index
             lowest_price = initerary['PricingOptions'][0]['Price']
+            if index == iter_count - 1 and status > 0:
+                continue
+                # cai cuoi cung thi khong tang gia nua
             next_iter_min_price = json_data['Itineraries'][index+1]['PricingOptions'][0]['Price']
             price_op_count = len(initerary['PricingOptions'])
-            # cai cuoi cung thi khong tang gia nua
-            if index == iter_count - 1 and status > 0:
+            if status > 0 and lowest_price == next_iter_min_price:
+                last_iter_min_price = lowest_price
+                continue
+            if status < 0 and lowest_price == last_iter_min_price:
+                last_iter_min_price = lowest_price
                 continue
             if price_op_count == 1:
                 if DENA_TRAVEL in initerary['PricingOptions'][0]['Agents']:
@@ -133,10 +144,13 @@ def auto_price(path, file, status, price_init, *args, **kwargs):
 
                     # neu gia giam hoac khogn doi thif khong can chinh gia
                     if status < 0:
+                        last_iter_min_price = lowest_price
                         continue
+
                     dena_price = price_adjust(lowest_price, price_init, status,
                                               last_iter_min_price, next_iter_min_price)
                     tmp = {
+                        'Iteratary': index,
                         'OutboundLegId': initerary['OutboundLegId'],
                         'Price': dena_price
                     }
@@ -175,6 +189,7 @@ def auto_price(path, file, status, price_init, *args, **kwargs):
                 dena_price = price_adjust(pricing_option['Price'], price_init, status,
                                           last_iter_min_price, limit_price)
                 tmp = {
+                    'Iteratary': index,
                     'OutboundLegId': initerary['OutboundLegId'],
                     'Price': dena_price
                 }
@@ -189,7 +204,7 @@ def auto_price(path, file, status, price_init, *args, **kwargs):
     # when done, write to file
     if is_write:
         result['Result'] = result_list
-        create_time = datetime.now().strftime('%Y%m%d')
+        create_time = datetime.now().strftime('%Y%m%d%H%M%S')
         file_name = 'result_' + create_time + '.json'
         data_file = path + '/result/' + file_name
         with open(data_file, 'w') as fwrite:
@@ -198,17 +213,25 @@ def auto_price(path, file, status, price_init, *args, **kwargs):
 
 def price_adjust(current, factor, status, min_price, max_price):
     price = current*(1+status*factor)
-    alpha = (min_price + max_price)/(min_price*max_price)
+    # alpha = 0
+    # if status > 0 and price == max_price:
+    #     return price
+    # if status < 0 and price == min_price:
+    #     return price
+    if min_price == 0:
+        alpha = float((2*max_price))/(max_price*max_price)
+    else:
+        alpha = float((min_price + max_price))/(min_price*max_price)
     while price < min_price or price > max_price:
         if price <= min_price:
-            price *= 1+alpha
+            price *= float(1+alpha)
         if price >= max_price:
-            price *= 1-alpha
+            price *= float(1-alpha)
     return price
 
 
 def calculation_price(new_ds, old_ds, *args, **kwargs):
-    base = new_ds + 1
+    base = abs(new_ds-old_ds)*new_ds*old_ds
     x = (float(new_ds) + 1) / (float(old_ds) + 1)
     h = math.log(x, base)
     return abs(h)
