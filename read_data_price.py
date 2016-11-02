@@ -94,13 +94,17 @@ def get_live_data(path, url, day, *args, **kwargs):
         # get current day
         create_time = datetime.now().strftime('%Y%m%d')
         # create_time = '20161021'
-        file_name = 'liveprice_' + create_time + '.json'
+        place = ''
+        if args:
+            place = args[0] + '_' + args[1] + '_'
+        file_name = 'liveprice_' + place + create_time + '.json'
         data_file = folder + '/live_price/' + file_name
 
         # check if file exist or not
         if not os.path.exists(data_file):
             response = requests.get(url=url, params=form)
-            time.sleep(1.2)
+            time.sleep(5.2)
+            logging.debug('Sleep for wait result')
             if response.status_code != 200:
                 return None
             with open(data_file, 'w') as _file:
@@ -118,6 +122,7 @@ def auto_price(path, file, status, price_init, *args, **kwargs):
     is_write = False
     result = dict()
     result_list = list()
+    logging.debug('Auto prcing start')
     with open(file) as json_file:
         json_data = json.load(json_file)
         iter_count = len(json_data['Itineraries'])
@@ -204,9 +209,13 @@ def auto_price(path, file, status, price_init, *args, **kwargs):
     # when done, write to file
     if is_write:
         result['Result'] = result_list
-        create_time = datetime.now().strftime('%Y%m%d%H%M%S')
-        file_name = 'result_' + create_time + '.json'
+        create_time = datetime.now().strftime('%Y%m%d_%H%M%S')
+        place = ''
+        if args:
+            place = args[0] + '_' + args[1] + '_'
+        file_name = 'result_' + place + create_time + '.json'
         data_file = path + '/result/' + file_name
+        # time.sleep(1.2)
         with open(data_file, 'w') as fwrite:
             json.dump(result, fwrite)
 

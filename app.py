@@ -200,10 +200,13 @@ class Dialog(tk.Tk):
 
         new_ds = self.new_DS.get()
         old_ds = self.old_DS.get()
-        delta = new_ds - old_ds
+        delta = new_ds - old_ds + 1
         base = delta*new_ds*old_ds
+        if delta == 1:
+            x = math.log(new_ds, 888)
         # x = float(old_ds+1.4*abs(delta)+1)/float(new_ds+1)
-        x = (float(new_ds)+1)/(float(old_ds)+1)
+        else:
+            x = (float(new_ds)+1)/(float(old_ds)+1)
         h = math.log(x, base)
         old_price = self.old_price.get()
         new_price = 0
@@ -546,6 +549,7 @@ class Dialog(tk.Tk):
         day = self.day_out.get()
         org = self.port_dep.get() + '-sky'
         des = self.port_des.get() + '-sky'
+        # logging.debug('%s_%s' % org, des)
         print des
         if org != 'TYOA-sky':
             logging.debug('- wrong origin_place -')
@@ -569,7 +573,7 @@ class Dialog(tk.Tk):
         # json_data = rdp.get_live_data(path=self.data_roor_folder)
 
     def get_data(self):
-        rdp.get_live_data(self.data_roor_folder, self.session, self.day_out.get())
+        rdp.get_live_data(self.data_roor_folder, self.session, self.day_out.get() )
 
     def test(self):
         self.calculate_prob()
@@ -579,13 +583,14 @@ class Dialog(tk.Tk):
             return False
         # leep a bit after create session
         # time.sleep(1.7)
-        file = rdp.get_live_data(self.data_roor_folder, self.session, self.day_out.get())
+        file = rdp.get_live_data(self.data_roor_folder, self.session,
+                                 self.day_out.get(), self.port_dep.get(), self.port_des.get())
         if not file:
             self.show_error('Get data fail', 'Something wrong was happend, please don\'t smoke. GG !')
             return False
         h = rdp.calculation_price(self.new_DS.get(), self.old_DS.get())
         date = self.day_out.get().replace('-', '')
-        path = self.data_roor_folder + date  # '/20161209'
+        path = self.data_roor_folder + '/' + date  # '/20161209'
         # file = path + '/live_price/liveprice_20161021.json'
         status = 0
         if self.new_state == 'Price_up':
@@ -593,7 +598,7 @@ class Dialog(tk.Tk):
         if self.new_state == 'Price_down':
             status = -1
         if status != 0:
-            rdp.auto_price(path, file, status, h)
+            rdp.auto_price(path, file, status, h, self.port_dep.get(), self.port_des.get())
             logging.debug('Auto pricing finish !')
             self.show_info('Success', 'Pricing has been done !')
             return True
