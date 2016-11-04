@@ -15,6 +15,7 @@ import yaml as Yaml
 from sup import my_calendar as Cal
 import read_data_price as rdp
 import time
+import os
 
 import logging
 logging.basicConfig(level=logging.DEBUG,
@@ -133,12 +134,14 @@ class Dialog(tk.Tk):
         # Tool menu
         # Clear
         toolmenu = tk.Menu(menu, tearoff=0)
-        menu.add_cascade(label='Tool', menu=toolmenu)
+        menu.add_cascade(label='Total Command', menu=toolmenu)
         # clear log result
-        toolmenu.add_command(label='Clear log', command=self.clear_log_result)
+        toolmenu.add_command(label='Checking data', command=self.checking_data)
         toolmenu.add_command(label='Create Session', command=self.get_live_data)
         toolmenu.add_command(label='Get Data', command=self.get_data)
         toolmenu.add_command(label='Test', command=self.test)
+        toolmenu.add_separator()
+        toolmenu.add_command(label='Clear log', command=self.clear_log_result)
 
         # Help
         # Help, About
@@ -551,14 +554,14 @@ class Dialog(tk.Tk):
         des = self.port_des.get() + '-sky'
         # logging.debug('%s_%s' % org, des)
         print des
-        if org != 'TYOA-sky':
-            logging.debug('- wrong origin_place -')
-            self.show_error('Input Data Error', 'Please check input code of `Departure`')
-            return False
-        if des != 'MMY-sky' and des != 'ISG-sky':
-            logging.debug('- wrong destination_place -')
-            self.show_error('Input Data Error', 'Please check input code of `Destination`')
-            return False
+        # if org != 'TYOA-sky':
+        #     logging.debug('- wrong origin_place -')
+        #     self.show_error('Input Data Error', 'Please check input code of `Departure`')
+        #     return False
+        # if des != 'MMY-sky' and des != 'ISG-sky':
+        #     logging.debug('- wrong destination_place -')
+        #     self.show_error('Input Data Error', 'Please check input code of `Destination`')
+        #     return False
         create_session = rdp.create_session(day=day, org=org, des=des)
         logging.debug('pause for getting session')
         time.sleep(1.2)
@@ -571,6 +574,32 @@ class Dialog(tk.Tk):
         logging.debug(self.session)
         return True
         # json_data = rdp.get_live_data(path=self.data_roor_folder)
+
+    def checking_data(self):
+        """ Checking if session/data already exist or not. """
+        logging.debug('Run testing ...')
+        date = self.day_out.get().replace('-', '')
+        path = self.data_roor_folder + '/' + date
+        # Testing `origin place`
+        org = self.port_dep.get()
+        if org != 'TYOA':
+            self.show_error('Input data error', 'Please check field `origin place` !')
+            return False
+        # Testing `destination place`
+        des = self.port_des.get()
+        if des != 'MMY' and des != 'ISG':
+            self.show_error('Input data error', 'Please check field `destination place` !')
+        # Check path folder
+        if not os.path.exists(path):
+            self.show_info('Finish test', 'Live pricing not exist, should be processed')
+            return True
+        # Check file `live pricing`
+        data_path = path + '/live_price/' + 'liveprice_{0!s}_{1!s}_'.format(org, des) + date
+        if not os.path.exists(data_path):
+            self.show_info('Finish test', 'Live pricing already exist')
+            return True
+        self.show_info('Finish test', 'Live pricing not exist, should be processed')
+        return False
 
     def get_data(self):
         rdp.get_live_data(self.data_roor_folder, self.session, self.day_out.get() )

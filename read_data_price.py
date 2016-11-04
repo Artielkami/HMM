@@ -28,6 +28,7 @@ def read_price(path, day, *args, **kwargs):
 
 
 def create_session(day, org, des, *args, **kwargs):
+    """ Return the session has been created """
     url = URL_LIVE_SKYCANNER_API
     header = {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -68,7 +69,7 @@ def get_live_data(path, url, day, *args, **kwargs):
     # header = {
     #     'Content-Type': 'application/x-www-form-urlencoded',
     #     'Accept': 'application/json'
-    # }
+    # }     hi684525042063916181915830535816
     # real: hi198240969190851351185584361476
     # test: prtl6749387986743898559646983194
 
@@ -103,13 +104,19 @@ def get_live_data(path, url, day, *args, **kwargs):
         # check if file exist or not
         if not os.path.exists(data_file):
             response = requests.get(url=url, params=form)
-            time.sleep(5.2)
+            # time.sleep(0.3)
             logging.debug('Sleep for wait result')
             if response.status_code != 200:
                 return None
-            with open(data_file, 'w') as _file:
-                json.dump(json.loads(response.text), _file)
+            # check status code of response
+            # ensure that result will
 
+            while response.json()['Status'] != 'UpdatesComplete':
+                response = requests.get(url=url, params=form)
+            #     logging.debug('sleep ...')
+                time.sleep(0.7)
+            with open(data_file, 'w') as _file:
+                json.dump(response.json(), _file)
         # data_url = folder + '/live_price/' + 'liveprice_20161021.json'
         return data_file
     except TypeError:
@@ -240,7 +247,7 @@ def price_adjust(current, factor, status, min_price, max_price):
 
 
 def calculation_price(new_ds, old_ds, *args, **kwargs):
-    base = abs(new_ds-old_ds)*new_ds*old_ds
+    base = (abs(new_ds-old_ds)+1)*new_ds*old_ds
     x = (float(new_ds) + 1) / (float(old_ds) + 1)
     h = math.log(x, base)
     return abs(h)
