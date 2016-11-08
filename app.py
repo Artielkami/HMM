@@ -5,6 +5,7 @@ except ImportError:
     import tkinter as tk
     import tkinter.font as tkFont
 import sys
+from dialog import StatusBar
 import tkMessageBox as tkmsg
 from tkFileDialog import askopenfilename
 from tkFileDialog import askdirectory
@@ -148,6 +149,18 @@ class Dialog(tk.Tk):
         helpmenu = tk.Menu(menu, tearoff=0)
         menu.add_cascade(label="Help", menu=helpmenu)
         helpmenu.add_command(label="About...", command=self.About)
+
+        # --------------------------------------------------------------------------------------------------------------
+        #
+        #                       Status bar
+        #
+        # --------------------------------------------------------------------------------------------------------------
+        # status = tk.Label(self.master, text="Status", bd=1, relief=tk.SUNKEN, anchor=tk.W)
+        # # status.pack(side=tk.BOTTOM, fill=tk.X)
+        # status.grid(columnspan=2, sticky='we')
+        # self.status_frame = tk.Frame(master=self.master, **kwargs)
+        # self.status_frame.grid(columnspan=2, sticky='we')
+        self.status_bar = StatusBar(self.master)
 
     def calculate_prob(self):
         self._get_value_transit()

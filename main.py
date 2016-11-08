@@ -6,6 +6,7 @@ from viterbi import Viterbi
 from Tkinter import *
 import app as app
 import ConfigParser
+import dialog
 import logging
 logging.basicConfig(level=logging.DEBUG,
                     format='Main: %(message)s')
@@ -71,6 +72,10 @@ _data = {
 
 ap = app.Dialog(setting=_setting, data=_data)
 ap.mainloop()
+
+# root = Tk()
+# d = S
+
 
 # config = ConfigParser.ConfigParser()
 # config.read('setting.cfg')
