@@ -140,7 +140,7 @@ class Dialog(tk.Tk):
         toolmenu.add_command(label='Checking data', command=self.checking_data)
         toolmenu.add_command(label='Create Session', command=self.get_live_data)
         toolmenu.add_command(label='Get Data', command=self.get_data)
-        toolmenu.add_command(label='Test', command=self.test)
+        toolmenu.add_command(label='Auto Pricing', command=self.test)
         toolmenu.add_separator()
         toolmenu.add_command(label='Clear log', command=self.clear_log_result)
 
@@ -149,6 +149,7 @@ class Dialog(tk.Tk):
         helpmenu = tk.Menu(menu, tearoff=0)
         menu.add_cascade(label="Help", menu=helpmenu)
         helpmenu.add_command(label="About...", command=self.About)
+        helpmenu.add_command(label="Test App", command=self.calculation_from_file)
 
         # --------------------------------------------------------------------------------------------------------------
         #
@@ -161,6 +162,7 @@ class Dialog(tk.Tk):
         # self.status_frame = tk.Frame(master=self.master, **kwargs)
         # self.status_frame.grid(columnspan=2, sticky='we')
         self.status_bar = StatusBar(self.master)
+        self.status_bar.set_status('All hail Trump, In trump we trust')
 
     def calculate_prob(self):
         self._get_value_transit()
@@ -615,7 +617,14 @@ class Dialog(tk.Tk):
         return False
 
     def get_data(self):
-        rdp.get_live_data(self.data_roor_folder, self.session, self.day_out.get() )
+        rdp.get_live_data(self.data_roor_folder, self.session, self.day_out.get())
+
+    def calculation_from_file(self):
+        h = rdp.calculation_price(self.new_DS.get(), self.old_DS.get())
+        path = self.data_roor_folder + '/20161212'
+        file = path + '/live_price/liveprice_TYOA_MMY_20161104.json'
+        rdp.auto_price(path, file, 1, h, self.port_dep.get(), self.port_des.get())
+        self.status_bar.set_status('Run success !')
 
     def test(self):
         self.calculate_prob()

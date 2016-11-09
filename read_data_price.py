@@ -27,6 +27,7 @@ def read_price(path, day, *args, **kwargs):
         print('json')
 
 
+# ----------------------------------------------------------------------------------------------------------------------
 def create_session(day, org, des, *args, **kwargs):
     """ Return the session has been created """
     url = URL_LIVE_SKYCANNER_API
@@ -64,11 +65,9 @@ def create_session(day, org, des, *args, **kwargs):
     return result
 
 
+# ----------------------------------------------------------------------------------------------------------------------
 def get_live_data(path, url, day, *args, **kwargs):
     # url = url
-    # header = {
-    #     'Content-Type': 'application/x-www-form-urlencoded',
-    #     'Accept': 'application/json'
     # }     hi684525042063916181915830535816
     # real: hi198240969190851351185584361476
     # test: prtl6749387986743898559646983194
@@ -124,53 +123,67 @@ def get_live_data(path, url, day, *args, **kwargs):
     return True
 
 
+# ----------------------------------------------------------------------------------------------------------------------
 def auto_price(path, file, status, price_init, *args, **kwargs):
     """ Read data from a file then do something """
+    # bool variable use for determine result will be written or not
     is_write = False
+    # pricing result, which is store at dict type
     result = dict()
+    # result content a list, named result_list
     result_list = list()
-    logging.debug('Auto prcing start')
+    logging.debug('Auto pricing start running')
     with open(file) as json_file:
+        logging.debug('Access data file success.')
+        # load file to json variable
         json_data = json.load(json_file)
+        # count number of flight
         iter_count = len(json_data['Itineraries'])
         # ong gia em sun rang, nhai trau cao = 2 nuu rang
+        # anh tim mang den em mot cap nhan co
+        # last flight have lowest price
         last_iter_min_price = 0
+        # loop through all list of Itineraries
+        logging.debug('Starting processing every Itineraries')
         for index, initerary in enumerate(json_data['Itineraries']):
-            print 'Iteratary %d is running' % index
+            print '- Iteratary %d is running' % index
             lowest_price = initerary['PricingOptions'][0]['Price']
             if index == iter_count - 1 and status > 0:
                 continue
                 # cai cuoi cung thi khong tang gia nua
             next_iter_min_price = json_data['Itineraries'][index+1]['PricingOptions'][0]['Price']
             price_op_count = len(initerary['PricingOptions'])
-            if status > 0 and lowest_price == next_iter_min_price:
-                last_iter_min_price = lowest_price
-                continue
-            if status < 0 and lowest_price == last_iter_min_price:
-                last_iter_min_price = lowest_price
-                continue
-            if price_op_count == 1:
-                if DENA_TRAVEL in initerary['PricingOptions'][0]['Agents']:
-                    # because only one price option, so it also the lowest price
-                    # and the next min price is the limit max price for adjust
 
-                    # neu gia giam hoac khogn doi thif khong can chinh gia
-                    if status < 0:
-                        last_iter_min_price = lowest_price
-                        continue
-
-                    dena_price = price_adjust(lowest_price, price_init, status,
-                                              last_iter_min_price, next_iter_min_price)
-                    tmp = {
-                        'Iteratary': index,
-                        'OutboundLegId': initerary['OutboundLegId'],
-                        'Price': dena_price
-                    }
-                    result_list.append(tmp)
-                    is_write = True
-                # move to next iter -> current will be last min price
-                last_iter_min_price = lowest_price
-                continue
+            # if status > 0 and lowest_price == next_iter_min_price:
+            #     last_iter_min_price = lowest_price
+            #     continue
+            # if status < 0 and lowest_price == last_iter_min_price:
+            #     last_iter_min_price = lowest_price
+            #     continue
+            # -------------------------------------------------------------------------------------------------
+            # if price_op_count == 1:
+            #     if DENA_TRAVEL in initerary['PricingOptions'][0]['Agents']:
+            #         # because only one price option, so it also the lowest price
+            #         # and the next min price is the limit max price for adjust
+            #
+            #         # neu gia giam hoac khogn doi thif khong can chinh gia
+            #         if status < 0:
+            #             last_iter_min_price = lowest_price
+            #             continue
+            #
+            #         dena_price = price_adjust(lowest_price, price_init, status,
+            #                                   last_iter_min_price, next_iter_min_price)
+            #         tmp = {
+            #             'Iteratary': index,
+            #             'OutboundLegId': initerary['OutboundLegId'],
+            #             'Price': dena_price
+            #         }
+            #         result_list.append(tmp)
+            #         is_write = True
+            #     # move to next iter -> current will be last min price
+            #     last_iter_min_price = lowest_price
+            #     continue
+            # --------------------------------------------------------------------------------------------------
 
             # if there are many price option
             # check each price option:
@@ -189,13 +202,41 @@ def auto_price(path, file, status, price_init, *args, **kwargs):
             if status < 0 and is_lowest:
                 last_iter_min_price = lowest_price
                 continue
+            # > 0 and lowest
+            if status > 0 and lowest_price == next_iter_min_price:
+                # if next price equals current price, but not belong to dena -> moving to next iter
+                if not is_dena_next(json_data['Itineraries'][index + 1]):
+                    last_iter_min_price = lowest_price
+                    continue
+                turn = index + 2
+                # get the lowest price of the second one, if not have then return 0
+                limit_price = get_min(price=limit_price,
+                                      current=initerary,
+                                      nex=json_data['Itineraries'][index + 1])
+                # get next max price by loop through each next iter
+                # check price and make sure the lowest is belong to deNa
+                # if not -> max = min of those iter
+                # if true -> next
+                while turn < iter_count and is_dena_next(json_data['Itineraries'][turn]) \
+                        and json_data['Itineraries'][turn]['PricingOptions'][0]['Price'] == lowest_price:
+                    limit_price = get_min(price=limit_price,
+                                          current=json_data['Itineraries'][turn],
+                                          nex=None)
+                    turn += 1
+                limit_price = get_min(price=limit_price,
+                                      current=json_data['Itineraries'][turn],
+                                      nex=None,
+                                      pos=0)
+
             for p_index, pricing_option in enumerate(initerary['PricingOptions']):
                 # if dena not in, next price option
                 if DENA_TRAVEL not in pricing_option['Agents']:
                     continue
-                if p_index == price_op_count - 1:
+                # if not set limit_price on above then set it in here
+                # else do not thing
+                if p_index == price_op_count - 1 and limit_price == 0:
                     limit_price = next_iter_min_price
-                else:
+                elif limit_price == 0:
                     limit_price = min(next_iter_min_price, initerary['PricingOptions'][p_index+1])
 
                 dena_price = price_adjust(pricing_option['Price'], price_init, status,
@@ -203,7 +244,7 @@ def auto_price(path, file, status, price_init, *args, **kwargs):
                 tmp = {
                     'Iteratary': index,
                     'OutboundLegId': initerary['OutboundLegId'],
-                    'Price': dena_price
+                    'Price': '{0:.2f}'.format(dena_price)
                 }
                 result_list.append(tmp)
                 is_write = True
@@ -212,8 +253,12 @@ def auto_price(path, file, status, price_init, *args, **kwargs):
                 if p_index == price_op_count - 1:
                     last_iter_min_price = lowest_price
                     # print pricing_option['Agents']
+                # after adjust price -> ignore other pricing option, move to next iti
+                logging.debug('Itineraries %d done' % index)
+                break
 
     # when done, write to file
+    logging.debug('Start writing file')
     if is_write:
         result['Result'] = result_list
         create_time = datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -225,8 +270,39 @@ def auto_price(path, file, status, price_init, *args, **kwargs):
         # time.sleep(1.2)
         with open(data_file, 'w') as fwrite:
             json.dump(result, fwrite)
+    logging.debug('Write to file success')
+
+def get_min(price=0, current=None, nex=None, pos=1):
+    # get second price between 2 Iti
+    count_cur = len(current['PricingOptions'])
+    if price == 0 and nex:
+        count_next = len(nex['PricingOptions'])
+        if count_cur == 1 and count_next > 1:
+            return nex['PricingOptions'][pos]['Price']
+        if count_next == 1 and count_cur > 1:
+            return current['PricingOptions'][pos]['Price']
+        if count_cur > 1 and count_cur > 1:
+            return min(nex['PricingOptions'][pos]['Price'], current['PricingOptions'][pos]['Price'])
+        # if both are only have one member, then return None
+        return 0
+    if price == 0 and count_cur > 1:
+        return current['PricingOptions'][1]['Price']
+    if price != 0 and count_cur > 1:
+        return min(price, current['PricingOptions'][pos]['Price'])
+    if price != 0:
+        return min(price, current['PricingOptions'][pos]['Price'])
+    if price == 0 and pos == 0:
+        return current['PricingOptions'][pos]['Price']
+    return 0
 
 
+def is_dena_next(iter):
+    if DENA_TRAVEL in iter['PricingOptions'][0]['Agents']:
+        return True
+    return False
+
+
+# ----------------------------------------------------------------------------------------------------------------------
 def price_adjust(current, factor, status, min_price, max_price):
     price = current*(1+status*factor)
     # alpha = 0
@@ -246,6 +322,7 @@ def price_adjust(current, factor, status, min_price, max_price):
     return price
 
 
+# ----------------------------------------------------------------------------------------------------------------------
 def calculation_price(new_ds, old_ds, *args, **kwargs):
     base = (abs(new_ds-old_ds)+1)*new_ds*old_ds
     x = (float(new_ds) + 1) / (float(old_ds) + 1)
@@ -253,6 +330,7 @@ def calculation_price(new_ds, old_ds, *args, **kwargs):
     return abs(h)
 
 
+# ----------------------------------------------------------------------------------------------------------------------
 def _get_option_price(itera):
     price = 0
     for p in itera['PricingOptions']:
