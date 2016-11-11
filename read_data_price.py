@@ -8,6 +8,7 @@ import time
 import logging
 import math
 
+loger = logging.getLogger('{:^12s}'.format('Read_Data'))
 # agents code of DeNA travel
 DENA_TRAVEL = 1945844
 URL_LIVE_SKYCANNER_API = 'http://partners.api.skyscanner.net/apiservices/pricing/v1.0'
@@ -22,7 +23,7 @@ def read_price(path, day, *args, **kwargs):
         json_data = json.load(json_file)
         for initerary in json['Itineraries']:
             for price_option in initerary['PricingOptions']:
-                print price_option['Price']
+                print(price_option['Price'])
 
         print('json')
 
@@ -119,7 +120,7 @@ def get_live_data(path, url, day, *args, **kwargs):
         # data_url = folder + '/live_price/' + 'liveprice_20161021.json'
         return data_file
     except TypeError:
-        print 'Writing file error'
+        print('Writing file error')
     return True
 
 
@@ -146,7 +147,7 @@ def auto_price(path, file, status, price_init, *args, **kwargs):
         # loop through all list of Itineraries
         logging.debug('Starting processing every Itineraries')
         for index, initerary in enumerate(json_data['Itineraries']):
-            print '- Iteratary %d is running' % index
+            print('- Iteratary %d is running' % index)
             lowest_price = initerary['PricingOptions'][0]['Price']
             if index == iter_count - 1 and status > 0:
                 continue
@@ -244,7 +245,7 @@ def auto_price(path, file, status, price_init, *args, **kwargs):
                 tmp = {
                     'Iteratary': index,
                     'OutboundLegId': initerary['OutboundLegId'],
-                    'Price': '{0:.2f}'.format(dena_price)
+                    'Price': math.floor(dena_price)
                 }
                 result_list.append(tmp)
                 is_write = True
@@ -271,6 +272,7 @@ def auto_price(path, file, status, price_init, *args, **kwargs):
         with open(data_file, 'w') as fwrite:
             json.dump(result, fwrite)
     logging.debug('Write to file success')
+
 
 def get_min(price=0, current=None, nex=None, pos=1):
     # get second price between 2 Iti
@@ -324,9 +326,16 @@ def price_adjust(current, factor, status, min_price, max_price):
 
 # ----------------------------------------------------------------------------------------------------------------------
 def calculation_price(new_ds, old_ds, *args, **kwargs):
-    base = (abs(new_ds-old_ds)+1)*new_ds*old_ds
+    # base = (abs(new_ds-old_ds)+1)*new_ds*old_ds
+    delta = abs(new_ds - old_ds) + math.e  # make sure that ln(delta) > 1
+    ln_new = math.log(new_ds)
+    ln_delta = math.log(new_ds)
+    base = delta*ln_new
     x = (float(new_ds) + 1) / (float(old_ds) + 1)
-    h = math.log(x, base)
+    h = math.log(x, base)*ln_delta/100
+    loger.info('h value %f'%h)
+    price_new = h*14390
+    loger.info('Price from 14390 > %.2f'%price_new)
     return abs(h)
 
 

@@ -1,3 +1,6 @@
+from __future__ import print_function
+
+
 try:
     import Tkinter as tk
     import tkFont
@@ -5,7 +8,9 @@ except ImportError:
     import tkinter as tk
     import tkinter.font as tkFont
 import sys
+from datetime import datetime
 from dialog import StatusBar
+from dialog import InfoDialog
 import tkMessageBox as tkmsg
 from tkFileDialog import askopenfilename
 from tkFileDialog import askdirectory
@@ -19,8 +24,8 @@ import time
 import os
 
 import logging
-logging.basicConfig(level=logging.DEBUG,
-                    format='[APP]: %(message)s')
+loger = logging.getLogger('App')
+
 # import calendar
 
 
@@ -89,6 +94,8 @@ class Dialog(tk.Tk):
         self.old_DS = tk.IntVar(self.master)
         self.old_DS.set(data['old_DS'])
 
+        self.tmp = tk.IntVar(self.master)
+
         self.new_DS = tk.IntVar(self.master)
         self.new_DS.set(data['new_DS'])
 
@@ -115,7 +122,7 @@ class Dialog(tk.Tk):
         self.session = None
         # --------------------------------------------------------------------------------------------------------------
         #
-        #   MENU
+        #                                                    MENU
         #
         # --------------------------------------------------------------------------------------------------------------
         menu = tk.Menu(self)
@@ -148,23 +155,21 @@ class Dialog(tk.Tk):
         # Help, About
         helpmenu = tk.Menu(menu, tearoff=0)
         menu.add_cascade(label="Help", menu=helpmenu)
-        helpmenu.add_command(label="About...", command=self.About)
+        helpmenu.add_command(label="About...", command=self.about)
         helpmenu.add_command(label="Test App", command=self.calculation_from_file)
+        helpmenu.add_command(label="Input DS", command=self.get_ond)
 
         # --------------------------------------------------------------------------------------------------------------
         #
-        #                       Status bar
+        #                                                 Status bar
         #
         # --------------------------------------------------------------------------------------------------------------
-        # status = tk.Label(self.master, text="Status", bd=1, relief=tk.SUNKEN, anchor=tk.W)
-        # # status.pack(side=tk.BOTTOM, fill=tk.X)
-        # status.grid(columnspan=2, sticky='we')
-        # self.status_frame = tk.Frame(master=self.master, **kwargs)
-        # self.status_frame.grid(columnspan=2, sticky='we')
+
         self.status_bar = StatusBar(self.master)
         self.status_bar.set_status('All hail Trump, In trump we trust')
 
     def calculate_prob(self):
+        self.checking_data()
         self._get_value_transit()
         self._get_value_emission()
         obs = []
@@ -227,7 +232,7 @@ class Dialog(tk.Tk):
             x = (float(new_ds)+1)/(float(old_ds)+1)
         h = math.log(x, base)
         old_price = self.old_price.get()
-        new_price = 0
+        # new_price = 0
         if state == 'Price_down':
             new_price = old_price*(1-abs(h))
         elif state == 'Price_up':
@@ -236,6 +241,42 @@ class Dialog(tk.Tk):
             new_price = old_price
         text += '\n' + str(new_price)
         self.result_text.set(text)
+
+        return True
+
+    def get_ond(self):
+        form = InfoDialog(self.master, self.tmp)
+        self.wait_window(form.top)
+        if self.tmp.get():
+            # self.entry_old_DS.config(state='normal')
+            self.old_DS.set(self.tmp.get())
+            # self.entry_old_DS.config(state='disabled')
+        loger.debug('Set old DS')
+    def write_log_status(self, path, day, status, **kwargs):
+
+        folder = path + '/' + day.replace('-', '')
+
+        if not os.path.exists(folder):
+            # make folder then also make 'live_price', 'log_search' and 'result'
+            os.makedirs(folder)
+            data_folder = folder + '/live_price'
+            os.makedirs(data_folder)
+            data_folder = folder + '/log_search'
+            os.makedirs(data_folder)
+            data_folder = folder + '/result'
+            os.makedirs(data_folder)
+
+        log_folder = folder + '/log_search'
+        create_time = datetime.now().strftime('%Y%m%d')
+        org = self.port_dep.get()
+        des = self.port_des.get()
+        log_name = 'log_%(create_time)s_%(org)s_%(des)s.log' % {'create_time': create_time, 'org': org, 'des': des}
+        log_file = log_folder + '/' + log_name
+        ds = self.new_DS.get()
+        lst = [create_time, org, des, status, str(ds)]
+        if not os.path.isfile(log_file):
+            with open(log_file, 'w') as lf:
+                lf.writelines('\t'.join(item for item in lst) + '\n')
 
     def _on_validate_float(self, action, index, value_if_allowed,
                            prior_value, text, validation_type, trigger_type, widget_name):
@@ -246,7 +287,7 @@ class Dialog(tk.Tk):
             except ValueError:
                 if not value_if_allowed:
                     return True
-                print '-fail 1-'
+                print('-fail 1-')
                 return False
         # else:
         #     print '-fail 2-'
@@ -260,7 +301,8 @@ class Dialog(tk.Tk):
                 self.matrix_transit[row][col] = float(item.get())
             # print self.matrix_transit
         except ValueError:
-            print 'Error input value'
+            print('Error input value')
+            loger.error('Invalid input')
         # print '---'
 
     def _get_value_emission(self):
@@ -271,7 +313,8 @@ class Dialog(tk.Tk):
                 self.matrix_emission[row][col] = float(item.get())
             # print self.matrix_emission
         except ValueError:
-            print 'Error input value'
+            print('Error input value')
+            loger.error('Invalid input')
         # print '---'
 
     def _TpFrame(self, master=None, **kwargs):
@@ -338,8 +381,9 @@ class Dialog(tk.Tk):
         # 1
         w = tk.Label(self.frame, text="Old status", fg="blue", justify=tk.LEFT)
         w.grid(row=0, column=0)
-        h = tk.Entry(self.frame, width=17, textvariable=self.old_status)
-        h.grid(row=1, column=0)
+        self.entry_old_status = tk.Entry(self.frame, width=17, textvariable=self.old_status, fg='red')
+        self.entry_old_status.grid(row=1, column=0)
+        self.entry_old_status.config(state='disabled')
 
         # 2
         # w = tk.Label(self.frame, text="Old probability", fg="blue", justify=tk.LEFT)
@@ -350,8 +394,9 @@ class Dialog(tk.Tk):
         # 3
         w = tk.Label(self.frame, text="Old DS", fg="blue", justify=tk.LEFT)
         w.grid(row=0, column=1)
-        h = tk.Entry(self.frame, width=17, textvariable=self.old_DS)
-        h.grid(row=1, column=1)
+        self.entry_old_DS = tk.Entry(self.frame, width=17, textvariable=self.old_DS, fg='red')
+        self.entry_old_DS.grid(row=1, column=1)
+        self.entry_old_DS.config(state='disabled')
         # 4
         w = tk.Label(self.frame, text="New DS", fg="blue", justify=tk.LEFT)
         w.grid(row=0, column=2)
@@ -417,11 +462,11 @@ class Dialog(tk.Tk):
         self.result_text.set('')
 
     def NewFile(self):
-        print "New File!"
+        print("New File!")
 
     def OpenFile(self):
         name = askopenfilename()
-        print name
+        print(name)
 
     def import_transit_prob(self):
         self.import_prob('TRANSIT_PROBABILITY')
@@ -454,20 +499,23 @@ class Dialog(tk.Tk):
     @staticmethod
     def _write_setting():
         dir = askdirectory()
-        print dir
+        loger.info('Folder has been choose: %s' % dir)
+        print(dir)
         config = ConfigParser.ConfigParser()
         config.read('setting.cfg')
         if config.has_section('PATH'):
             config.set('PATH', 'root_folder', dir)
             # print '- change `root_folder` value -'
-            logging.debug('- change `root_folder` value -')
+            loger.debug('- change `root_folder` value -')
         else:
             config.add_section('PATH')
             config.set('PATH', 'root_folder', dir)
             # print '- section `PATH` is not exist -'
-            logging.debug('- section `PATH` is not exist -')
+            # loger.error('- section `PATH` is not exist -')
             # print '- Add section `PATH` and set `root_folder` value'
-            logging.debug('- Add section `PATH` and set `root_folder` value')
+            loger.debug('- Add section `PATH` and set `root_folder` value')
+            # loger.info('Root folder: %s' % dir)
+        loger.info('Root folder: %s' % dir)
         with open('setting.cfg', 'wb') as configfile:
             config.write(configfile)
 
@@ -526,11 +574,11 @@ class Dialog(tk.Tk):
         # with open('config.yml', 'w') as configfile:
         #     config.write(configfile)
 
-        print '[-- SET INI FILE COMPLETED --]'
+        print('[-- SET INI FILE COMPLETED --]')
 
-    def About(self):
+    def about(self):
         tkmsg.showinfo('About', 'Just a simple simulate for auto price')
-        print "This is a simple example of a menu"
+        print("This is a simple example of a menu")
 
     def answer(self):
         tkmsg.showerror("Answer", "Sorry, no answer available")
@@ -547,12 +595,12 @@ class Dialog(tk.Tk):
         data = config.read('setting.cfg')
         # raise error if missing file setting
         if not len(data):
-            logging.debug('Missing file `setting.cfg` !')
+            loger.error('Missing file `setting.cfg` !')
             self.show_error('Missing File', '`setting.cfg` is missing')
             return False
         if config.has_section('PATH'):
             self.data_roor_folder = config.get('PATH', 'root_folder')
-            logging.debug('Get root folder success')
+            loger.debug('Get root folder success')
             return True
 
         return False
@@ -568,7 +616,7 @@ class Dialog(tk.Tk):
         org = self.port_dep.get() + '-sky'
         des = self.port_des.get() + '-sky'
         # logging.debug('%s_%s' % org, des)
-        print des
+        print(des)
         # if org != 'TYOA-sky':
         #     logging.debug('- wrong origin_place -')
         #     self.show_error('Input Data Error', 'Please check input code of `Departure`')
@@ -604,6 +652,7 @@ class Dialog(tk.Tk):
         des = self.port_des.get()
         if des != 'MMY' and des != 'ISG':
             self.show_error('Input data error', 'Please check field `destination place` !')
+            return False
         # Check path folder
         if not os.path.exists(path):
             self.show_info('Finish test', 'Live pricing not exist, should be processed')
@@ -621,10 +670,14 @@ class Dialog(tk.Tk):
 
     def calculation_from_file(self):
         h = rdp.calculation_price(self.new_DS.get(), self.old_DS.get())
-        path = self.data_roor_folder + '/20161212'
-        file = path + '/live_price/liveprice_TYOA_MMY_20161104.json'
-        rdp.auto_price(path, file, 1, h, self.port_dep.get(), self.port_des.get())
-        self.status_bar.set_status('Run success !')
+        # path = self.data_roor_folder + '/20161212'
+        # file = path + '/live_price/liveprice_TYOA_MMY_20161104.json'
+        # rdp.auto_price(path, file, 1, h, self.port_dep.get(), self.port_des.get())
+        # self.status_bar.set_status('Run success !')
+        # if self.calculate_prob():
+        #     self.write_log_status(self.data_roor_folder,
+        #                           self.day_out.get(),
+        #                           self.new_state, )
 
     def test(self):
         self.calculate_prob()

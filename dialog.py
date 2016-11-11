@@ -23,7 +23,7 @@ class StatusBar(tk.Frame):
 
 class InfoDialog:
 
-    def __init__(self, parent):
+    def __init__(self, parent, var):
 
         top = self.top = tk.Toplevel(parent)
 
@@ -32,11 +32,13 @@ class InfoDialog:
         self.e = tk.Entry(top)
         self.e.pack(padx=5)
 
+        self.var = var
+
         b = tk.Button(top, text="OK", command=self.ok)
         b.pack(pady=5)
 
     def ok(self):
-
-        print "value is", self.e.get()
-
+        k = self.e.get()
+        self.var.set(k)
+        print "value is", k
         self.top.destroy()
