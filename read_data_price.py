@@ -29,7 +29,7 @@ def read_price(path, day, *args, **kwargs):
 
 
 # ----------------------------------------------------------------------------------------------------------------------
-def create_session(day, org, des, *args, **kwargs):
+def create_session(path, day, org, des, *args, **kwargs):
     """ Return the session has been created """
     url = URL_LIVE_SKYCANNER_API
     header = {
@@ -47,11 +47,27 @@ def create_session(day, org, des, *args, **kwargs):
         'destinationplace': des,
         'outbounddate': day
     }
-    r = requests.post(url=url, data=form, headers=header)
+
+    folder = path + '/' + day.replace('-', '')
+
+    create_time = datetime.now().strftime('%Y%m%d')
+    # create_time = '20161021'
+    place = org.replace('-sky', '') + '_' + des.replace('-sky', '') + '_'
+    file_name = 'liveprice_' + place + create_time + '.json'
+    data_file = folder + '/live_price/' + file_name
+
     result = {
         'status': 1,  # 1=True, 0=False
         'message': 'Request live data success'
     }
+
+    if os.path.isfile(data_file):
+        result['status'] = 2
+        result['message'] = 'Data ready yet'
+        return result
+
+    r = requests.post(url=url, data=form, headers=header)
+
     if r.status_code == 201:
         result['session'] = r.headers['Location']
     elif r.status_code == 429:
@@ -110,11 +126,14 @@ def get_live_data(path, url, day, *args, **kwargs):
                 return None
             # check status code of response
             # ensure that result will
-
-            while response.json()['Status'] != 'UpdatesComplete':
-                response = requests.get(url=url, params=form)
-            #     logging.debug('sleep ...')
-                time.sleep(0.7)
+            loger.debug('sleep ...')
+            time.sleep(15)
+            # try max 3 times
+            for i in range(0, 2):
+                if response.json()['Status'] != 'UpdatesComplete':
+                    time.sleep(15)
+                    response = requests.get(url=url, params=form)
+            loger.debug('unpause !')
             with open(data_file, 'w') as _file:
                 json.dump(response.json(), _file)
         # data_url = folder + '/live_price/' + 'liveprice_20161021.json'
@@ -290,9 +309,9 @@ def get_min(price=0, current=None, nex=None, pos=1):
     if price == 0 and count_cur > 1:
         return current['PricingOptions'][1]['Price']
     if price != 0 and count_cur > 1:
-        return min(price, current['PricingOptions'][pos]['Price'])
+        return min(price, current['PricingOptions'][1]['Price'])
     if price != 0:
-        return min(price, current['PricingOptions'][pos]['Price'])
+        return min(price, current['PricingOptions'][0]['Price'])
     if price == 0 and pos == 0:
         return current['PricingOptions'][pos]['Price']
     return 0
@@ -327,15 +346,17 @@ def price_adjust(current, factor, status, min_price, max_price):
 # ----------------------------------------------------------------------------------------------------------------------
 def calculation_price(new_ds, old_ds, *args, **kwargs):
     # base = (abs(new_ds-old_ds)+1)*new_ds*old_ds
+    if new_ds - old_ds == 0:
+        new_ds += 1
     delta = abs(new_ds - old_ds) + math.e  # make sure that ln(delta) > 1
     ln_new = math.log(new_ds)
     ln_delta = math.log(new_ds)
-    base = delta*ln_new
+    base = delta*new_ds
     x = (float(new_ds) + 1) / (float(old_ds) + 1)
     h = math.log(x, base)*ln_delta/100
     loger.info('h value %f'%h)
     price_new = h*14390
-    loger.info('Price from 14390 > %.2f'%price_new)
+    loger.info('Price from 14390 > %.2f' % price_new)
     return abs(h)
 
 

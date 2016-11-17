@@ -9,6 +9,7 @@ except ImportError:
     import tkinter.font as tkFont
 import sys
 from datetime import datetime
+from datetime import timedelta
 from dialog import StatusBar
 from dialog import InfoDialog
 import tkMessageBox as tkmsg
@@ -119,7 +120,15 @@ class Dialog(tk.Tk):
 
         # Read setting
         self._read_setting()
-        self.session = None
+        # self.session = None
+        self.session = {
+            'create_time': None,
+            'session': None,
+            'org': 'TYOA',
+            'des': 'ISG',
+            'day': '20161111'
+        }
+        self.error_code = 0
         # --------------------------------------------------------------------------------------------------------------
         #
         #                                                    MENU
@@ -144,10 +153,11 @@ class Dialog(tk.Tk):
         toolmenu = tk.Menu(menu, tearoff=0)
         menu.add_cascade(label='Total Command', menu=toolmenu)
         # clear log result
+        toolmenu.add_command(label="Input old DS", command=self.get_ond)
         toolmenu.add_command(label='Checking data', command=self.checking_data)
         toolmenu.add_command(label='Create Session', command=self.get_live_data)
         toolmenu.add_command(label='Get Data', command=self.get_data)
-        toolmenu.add_command(label='Auto Pricing', command=self.test)
+        toolmenu.add_command(label='Auto Pricing', command=self.carry_all_by_EE_sama)
         toolmenu.add_separator()
         toolmenu.add_command(label='Clear log', command=self.clear_log_result)
 
@@ -156,8 +166,8 @@ class Dialog(tk.Tk):
         helpmenu = tk.Menu(menu, tearoff=0)
         menu.add_cascade(label="Help", menu=helpmenu)
         helpmenu.add_command(label="About...", command=self.about)
-        helpmenu.add_command(label="Test App", command=self.calculation_from_file)
-        helpmenu.add_command(label="Input DS", command=self.get_ond)
+        helpmenu.add_command(label="Test App", command=self.tets_1)
+
 
         # --------------------------------------------------------------------------------------------------------------
         #
@@ -168,8 +178,55 @@ class Dialog(tk.Tk):
         self.status_bar = StatusBar(self.master)
         self.status_bar.set_status('All hail Trump, In trump we trust')
 
+    def get_ds(self):
+        day = self.day_out.get()
+        org = self.port_dep.get()
+        des = self.port_des.get()
+        path = self.data_roor_folder
+
+        folder = path + '/' + day.replace('-', '')
+
+        if not os.path.exists(folder):
+            self.show_error('Error', 'Date was not having auto pricing any time before\n'
+                                     'Please insert a start day search number for it')
+            self.get_ond()
+            return True
+        log_folder = folder + '/log_search'
+        create_time = datetime.now().strftime('%Y%m%d')
+
+        # file_path = log_folder + '/log_%s_%s' % (org, des)
+
+        log_name = 'log_%(org)s_%(des)s.log' % {'org': org, 'des': des}
+        log_file = log_folder + '/' + log_name
+        # ds = self.new_DS.get()
+        # lst = [create_time, org, des, status, str(ds)]
+        if not os.path.isfile(log_file):
+            self.show_error('Error', 'Date was not having auto pricing any time before\n'
+                                     'Please insert a start day search number for it')
+            self.get_ond()
+            return True
+
+        with open(log_file, 'r') as f:
+            tmp = ''
+            for line in f:
+                tmp = line
+                dt = tmp.split()[0]
+                if dt == create_time:
+                    self.show_error('Error', 'This was auto pricing already')
+                    return False
+            else:
+                lst = tmp.split()
+                self.old_DS.set(lst[4])
+                self.old_status.set(lst[3])
+        return True
+
     def calculate_prob(self):
-        self.checking_data()
+        if not self.checking_data():
+            return False
+
+        if not self.get_ds():
+            return False
+
         self._get_value_transit()
         self._get_value_emission()
         obs = []
@@ -239,7 +296,7 @@ class Dialog(tk.Tk):
             new_price = old_price*(1+abs(h))
         else:
             new_price = old_price
-        text += '\n' + str(new_price)
+        # text += '\n' + str(new_price)
         self.result_text.set(text)
 
         return True
@@ -252,6 +309,14 @@ class Dialog(tk.Tk):
             self.old_DS.set(self.tmp.get())
             # self.entry_old_DS.config(state='disabled')
         loger.debug('Set old DS')
+
+    def tets_1(self):
+        if not self.calculate_prob():
+            return False
+        day = self.day_out.get().replace('-', '')
+        self.write_log_status(self.data_roor_folder, day, self.new_state, )
+        return True
+
     def write_log_status(self, path, day, status, **kwargs):
 
         folder = path + '/' + day.replace('-', '')
@@ -270,13 +335,22 @@ class Dialog(tk.Tk):
         create_time = datetime.now().strftime('%Y%m%d')
         org = self.port_dep.get()
         des = self.port_des.get()
-        log_name = 'log_%(create_time)s_%(org)s_%(des)s.log' % {'create_time': create_time, 'org': org, 'des': des}
+        file_path = log_folder + '/log_%s_%s' % (org, des)
+
+        log_name = 'log_%(org)s_%(des)s.log' % {'org': org, 'des': des}
         log_file = log_folder + '/' + log_name
         ds = self.new_DS.get()
         lst = [create_time, org, des, status, str(ds)]
         if not os.path.isfile(log_file):
             with open(log_file, 'w') as lf:
                 lf.writelines('\t'.join(item for item in lst) + '\n')
+            return True
+        with open(log_file, 'r+') as f:
+            for line in f:
+                if line.split()[0] == create_time:
+                    return False
+            else:
+                f.writelines('\t'.join(item for item in lst) + '\n')
 
     def _on_validate_float(self, action, index, value_if_allowed,
                            prior_value, text, validation_type, trigger_type, widget_name):
@@ -372,7 +446,7 @@ class Dialog(tk.Tk):
                       activebackground='blue', command=self._get_value_emission)
         b.grid(row=1, column=0)
         b = tk.Button(self.frame, text="Calculate", bg="red", height=7, width=10, padx=5,
-                      activebackground='blue', command=self.calculate_prob)
+                      activebackground='blue', command=self.carry_all_by_EE_sama)
         b.grid(row=1, column=1)
 
     def _InputFrame(self, master=None, **kwargs):
@@ -426,27 +500,33 @@ class Dialog(tk.Tk):
         h.grid(row=0, column=2, columnspan=2)
         # Destination port: MMY-sky | ISG-sky
         w = tk.Label(master, text="Destination", fg="blue", justify=tk.LEFT)
-        w.grid(row=0, column=6, columnspan=2, padx=10)
+        w.grid(row=0, column=6, columnspan=2, padx=10, rowspan=2)
         h = tk.Entry(master, width=17, textvariable=self.port_des)
-        h.grid(row=0, column=8, columnspan=2)
+        h.grid(row=0, column=8, columnspan=2, rowspan=2)
         # Outward day
         w = tk.Label(master, text="Out", fg="green", justify=tk.LEFT)
         w.grid(row=1, column=0)
         h = tk.Entry(master, width=17, textvariable=self.day_out)
         h.grid(row=1, column=2, columnspan=2)
+        cal_out = tk.Button(master, text='Date', command=self.make_date_out)
+        cal_out.grid(row=1, column=1, sticky='we')
         # Return day - not require
-        w = tk.Label(master, text="In", fg="red", justify=tk.LEFT)
-        w.grid(row=1, column=6)
-        h = tk.Entry(master, width=17, textvariable=self.day_in)
-        h.grid(row=1, column=8, columnspan=2)
+        # future
+        # w = tk.Label(master, text="In", fg="red", justify=tk.LEFT)
+        # w.grid(row=1, column=6)
+        # h = tk.Entry(master, width=17, textvariable=self.day_in)
+        # h.grid(row=1, column=8, columnspan=2)
+        # cal_in = tk.Button(master, text='Date', command=self.make_date_in)
+        # cal_in.grid(row=1, column=7, sticky='we')
+
+        w = tk.Label(master, text="New DS", fg="red", justify=tk.LEFT)
+        w.grid(row=0, column=10, rowspan=2)
+        h = tk.Entry(master, width=17, textvariable=self.new_DS)
+        h.grid(row=0, column=11, rowspan=2)
 
         # can't use calender because calender module not exist, and idk why.
         # ttkcal = Cal.MyDatePicker(format_str='%02d-%s-%s')
-        cal_out = tk.Button(master, text='Date', command=self.make_date_out)
-        cal_out.grid(row=1, column=1, sticky='we')
 
-        cal_in = tk.Button(master, text='Date', command=self.make_date_in)
-        cal_in.grid(row=1, column=7, sticky='we')
 
     def make_date_out(self):
         Cal.MyDatePicker(widget=self.day_out, format_str='%s-%02d-%02d')
@@ -611,59 +691,79 @@ class Dialog(tk.Tk):
     def show_info(self, title, message):
         tkmsg.showinfo(title, message)
 
+    def check_session(self, day, org, des):
+        if self.session['session']:
+            if self.session['day'] != day:
+                return True
+            if self.session['org'] != org:
+                return True
+            if self.session['des'] != des:
+                return True
+            dt = timedelta(minutes=29)
+            new_time = datetime.now() - dt
+            old_time = self.session['create_time']
+            if new_time < old_time:
+                return False
+        return True
+
     def get_live_data(self):
         day = self.day_out.get()
         org = self.port_dep.get() + '-sky'
         des = self.port_des.get() + '-sky'
+
+        if not self.check_session(day.replace('-', ''), org, des):
+            return True
+
         # logging.debug('%s_%s' % org, des)
-        print(des)
-        # if org != 'TYOA-sky':
-        #     logging.debug('- wrong origin_place -')
-        #     self.show_error('Input Data Error', 'Please check input code of `Departure`')
-        #     return False
-        # if des != 'MMY-sky' and des != 'ISG-sky':
-        #     logging.debug('- wrong destination_place -')
-        #     self.show_error('Input Data Error', 'Please check input code of `Destination`')
-        #     return False
-        create_session = rdp.create_session(day=day, org=org, des=des)
+
+        create_session = rdp.create_session(path=self.data_roor_folder, day=day, org=org, des=des)
+        if create_session['status'] == 2:
+            return True
         logging.debug('pause for getting session')
         time.sleep(1.2)
         logging.debug('create session complete')
         if create_session['status'] == 0:
             self.show_error('Error', create_session['message'])
             return False
-        self.session = create_session['session']
-        self.day_in.set(self.session)
-        logging.debug(self.session)
+
+        self.session['session'] = create_session['session']
+        self.session['day'] = day.replace('-', '')
+        self.session['org'] = org
+        self.session['des'] = des
+        self.session['create_time'] = datetime.now()
+
+        # self.day_in.set(self.session)
+        loger.info(self.session['session'])
         return True
         # json_data = rdp.get_live_data(path=self.data_roor_folder)
 
     def checking_data(self):
         """ Checking if session/data already exist or not. """
         logging.debug('Run testing ...')
-        date = self.day_out.get().replace('-', '')
+        # date = self.day_out.get().replace('-', '')
+        date = datetime.now().strftime('%Y%m%d')
         path = self.data_roor_folder + '/' + date
         # Testing `origin place`
         org = self.port_dep.get()
         if org != 'TYOA':
-            self.show_error('Input data error', 'Please check field `origin place` !')
+            # self.show_error('Input data error', 'Please check field `origin place` !')
             return False
         # Testing `destination place`
         des = self.port_des.get()
         if des != 'MMY' and des != 'ISG':
-            self.show_error('Input data error', 'Please check field `destination place` !')
+            # self.show_error('Input data error', 'Please check field `destination place` !')
             return False
         # Check path folder
-        if not os.path.exists(path):
-            self.show_info('Finish test', 'Live pricing not exist, should be processed')
-            return True
-        # Check file `live pricing`
-        data_path = path + '/live_price/' + 'liveprice_{0!s}_{1!s}_'.format(org, des) + date
-        if not os.path.exists(data_path):
-            self.show_info('Finish test', 'Live pricing already exist')
-            return True
-        self.show_info('Finish test', 'Live pricing not exist, should be processed')
-        return False
+        # if not os.path.exists(path):
+        #     # self.show_info('Finish test', 'Live pricing not exist, should be processed')
+        #     return True
+        # # Check file `live pricing`
+        # data_path = path + '/live_price/' + 'liveprice_{0!s}_{1!s}_'.format(org, des) + date
+        # if not os.path.exists(data_path):
+        #     # self.show_info('Finish test', 'Live pricing already exist')
+        #     return True
+        # self.show_info('Finish test', 'Live pricing not exist, should be processed')
+        return True
 
     def get_data(self):
         rdp.get_live_data(self.data_roor_folder, self.session, self.day_out.get())
@@ -679,22 +779,29 @@ class Dialog(tk.Tk):
         #                           self.day_out.get(),
         #                           self.new_state, )
 
-    def test(self):
-        self.calculate_prob()
-
+    def carry_all_by_EE_sama(self):
+        # check if data valid
+        if not self.checking_data():
+            self.show_error('Error input', 'Please checking for input data')
+            self.status_bar.setvar('Running fail ...')
+            return False
+        # calculation prob
+        if not self.calculate_prob():
+            return False
+        # write log
+        day = self.day_out.get().replace('-', '')
+        self.write_log_status(self.data_roor_folder, day, self.new_state, )
+        # get data
         if not self.get_live_data():
             self.show_info('Fail', 'Fail on get live data!')
             return False
         # leep a bit after create session
         # time.sleep(1.7)
-        file = rdp.get_live_data(self.data_roor_folder, self.session,
+        file = rdp.get_live_data(self.data_roor_folder, self.session['session'],
                                  self.day_out.get(), self.port_dep.get(), self.port_des.get())
         if not file:
-            self.show_error('Get data fail', 'Something wrong was happend, please don\'t smoke. GG !')
+            self.show_error('Get data fail', 'Something wrong was happend, may be try other port !')
             return False
-        h = rdp.calculation_price(self.new_DS.get(), self.old_DS.get())
-        date = self.day_out.get().replace('-', '')
-        path = self.data_roor_folder + '/' + date  # '/20161209'
         # file = path + '/live_price/liveprice_20161021.json'
         status = 0
         if self.new_state == 'Price_up':
@@ -702,6 +809,11 @@ class Dialog(tk.Tk):
         if self.new_state == 'Price_down':
             status = -1
         if status != 0:
+            h = rdp.calculation_price(self.new_DS.get(), self.old_DS.get())
+            tmp = self.result_text.get() + '\n Base factor = %f' % h
+            self.result_text.set(tmp)
+            date = self.day_out.get().replace('-', '')
+            path = self.data_roor_folder + '/' + date  # '/20161209'
             rdp.auto_price(path, file, status, h, self.port_dep.get(), self.port_des.get())
             logging.debug('Auto pricing finish !')
             self.show_info('Success', 'Pricing has been done !')
