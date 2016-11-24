@@ -222,6 +222,8 @@ class Dialog(tk.Tk):
 
     def calculate_prob(self):
         if not self.checking_data():
+            self.show_error('Error input', 'Please checking for input data')
+            self.status_bar.setvar('Running fail ...')
             return False
 
         if not self.get_ds():
@@ -440,7 +442,7 @@ class Dialog(tk.Tk):
                       activebackground='blue', command=self._get_value_transit)
         b.grid(row=0, column=0)
         b = tk.Button(self.frame, text="Read data", bg="yellow", height=7, width=10, padx=5,
-                      activebackground='blue', command=self.import_doto)
+                      activebackground='blue', command=self.get_ds)
         b.grid(row=0, column=1)
         b = tk.Button(self.frame, text="In emission", bg="green", height=7, width=10, padx=5,
                       activebackground='blue', command=self._get_value_emission)
@@ -471,26 +473,26 @@ class Dialog(tk.Tk):
         self.entry_old_DS = tk.Entry(self.frame, width=17, textvariable=self.old_DS, fg='red')
         self.entry_old_DS.grid(row=1, column=1)
         self.entry_old_DS.config(state='disabled')
-        # 4
-        w = tk.Label(self.frame, text="New DS", fg="blue", justify=tk.LEFT)
-        w.grid(row=0, column=2)
-        h = tk.Entry(self.frame, width=17, textvariable=self.new_DS)
-        h.grid(row=1, column=2)
-        # 5
-        w = tk.Label(self.frame, text="Old CR", fg="blue", justify=tk.LEFT)
-        w.grid(row=2, column=0)
-        h = tk.Entry(self.frame, width=17, textvariable=self.old_CR)
-        h.grid(row=3, column=0)
-        # 6
-        w = tk.Label(self.frame, text="New CR", fg="blue", justify=tk.LEFT)
-        w.grid(row=2, column=1)
-        h = tk.Entry(self.frame, width=17, textvariable=self.new_CR)
-        h.grid(row=3, column=1)
-        # 7
-        w = tk.Label(self.frame, text="Old price", fg="blue", justify=tk.LEFT)
-        w.grid(row=2, column=2)
-        h = tk.Entry(self.frame, width=17, textvariable=self.old_price)
-        h.grid(row=3, column=2)
+        # # 4
+        # w = tk.Label(self.frame, text="New DS", fg="blue", justify=tk.LEFT)
+        # w.grid(row=0, column=2)
+        # h = tk.Entry(self.frame, width=17, textvariable=self.new_DS)
+        # h.grid(row=1, column=2)
+        # # 5
+        # w = tk.Label(self.frame, text="Old CR", fg="blue", justify=tk.LEFT)
+        # w.grid(row=2, column=0)
+        # h = tk.Entry(self.frame, width=17, textvariable=self.old_CR)
+        # h.grid(row=3, column=0)
+        # # 6
+        # w = tk.Label(self.frame, text="New CR", fg="blue", justify=tk.LEFT)
+        # w.grid(row=2, column=1)
+        # h = tk.Entry(self.frame, width=17, textvariable=self.new_CR)
+        # h.grid(row=3, column=1)
+        # # 7
+        # w = tk.Label(self.frame, text="Old price", fg="blue", justify=tk.LEFT)
+        # w.grid(row=2, column=2)
+        # h = tk.Entry(self.frame, width=17, textvariable=self.old_price)
+        # h.grid(row=3, column=2)
 
     def _master_frame(self, master=None, **kwargs):
         # Departure port, TYOA-sky
@@ -781,10 +783,10 @@ class Dialog(tk.Tk):
 
     def carry_all_by_EE_sama(self):
         # check if data valid
-        if not self.checking_data():
-            self.show_error('Error input', 'Please checking for input data')
-            self.status_bar.setvar('Running fail ...')
-            return False
+        # if not self.checking_data():
+        #     self.show_error('Error input', 'Please checking for input data')
+        #     self.status_bar.setvar('Running fail ...')
+        #     return False
         # calculation prob
         if not self.calculate_prob():
             return False
