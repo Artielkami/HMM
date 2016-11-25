@@ -13,7 +13,7 @@ TRANSIT_PROBABILITY:
     price_keep: 0.38
     price_up: 0.36
 
-emission_probability:
+EMISSION_PROBABILITY:
   price_up:
     ds_increase: 0.584
     ds_decrease: 0.416

@@ -11,7 +11,7 @@ import sys
 from datetime import datetime
 from datetime import timedelta
 from dialog import StatusBar
-from dialog import InfoDialog
+from dialog import InfoDialog, ApiDialog
 import tkMessageBox as tkmsg
 from tkFileDialog import askopenfilename
 from tkFileDialog import askdirectory
@@ -97,6 +97,8 @@ class Dialog(tk.Tk):
 
         self.tmp = tk.IntVar(self.master)
 
+        self.api_key_var = tk.StringVar(self.master)
+
         self.new_DS = tk.IntVar(self.master)
         self.new_DS.set(data['new_DS'])
 
@@ -143,8 +145,9 @@ class Dialog(tk.Tk):
         menu.add_cascade(label="File", menu=filemenu)
         # filemenu.add_command(label="New", command=self.NewFile)
         # filemenu.add_command(label="Open...", command=self.OpenFile)
-        filemenu.add_command(label='Import config', command=self.import_transit_prob)
+        filemenu.add_command(label='Import probability', command=self.import_transit_prob)
         filemenu.add_command(label='Change data root folder', command=self._write_setting)
+        filemenu.add_command(label='Change API key', command=self.change_api_key)
         filemenu.add_separator()
         filemenu.add_command(label="Exit", command=self.quit)
 
@@ -156,8 +159,8 @@ class Dialog(tk.Tk):
         toolmenu.add_command(label="Input old DS", command=self.get_ond)
         toolmenu.add_command(label='Checking data', command=self.checking_data)
         toolmenu.add_command(label='Create Session', command=self.get_live_data)
-        toolmenu.add_command(label='Get Data', command=self.get_data)
-        toolmenu.add_command(label='Auto Pricing', command=self.carry_all_by_EE_sama)
+        toolmenu.add_command(label='Calculate next state', command=self.cal_log)
+        toolmenu.add_command(label='Get Data & Auto Pricing', command=self.calculation_from_file)
         toolmenu.add_separator()
         toolmenu.add_command(label='Clear log', command=self.clear_log_result)
 
@@ -166,7 +169,7 @@ class Dialog(tk.Tk):
         helpmenu = tk.Menu(menu, tearoff=0)
         menu.add_cascade(label="Help", menu=helpmenu)
         helpmenu.add_command(label="About...", command=self.about)
-        helpmenu.add_command(label="Test App", command=self.tets_1)
+        # helpmenu.add_command(label="Test App", command=self.tets_1)
 
 
         # --------------------------------------------------------------------------------------------------------------
@@ -182,7 +185,7 @@ class Dialog(tk.Tk):
         day = self.day_out.get()
         org = self.port_dep.get()
         des = self.port_des.get()
-        path = self.data_roor_folder
+        path = self.data_root_folder
 
         folder = path + '/' + day.replace('-', '')
 
@@ -316,7 +319,7 @@ class Dialog(tk.Tk):
         if not self.calculate_prob():
             return False
         day = self.day_out.get().replace('-', '')
-        self.write_log_status(self.data_roor_folder, day, self.new_state, )
+        self.write_log_status(self.data_root_folder, day, self.new_state, )
         return True
 
     def write_log_status(self, path, day, status, **kwargs):
@@ -438,14 +441,14 @@ class Dialog(tk.Tk):
         self.frame.pack(fill=tk.X, padx=10, pady=10, side=tk.LEFT)
         # w = tk.Label(self.frame, text="Table emission probability", fg="blue", justify=tk.LEFT)
         # w.pack(fill=tk.X, padx=10, pady=10, side=tk.LEFT)
-        b = tk.Button(self.frame, text="In transit", bg="green", height=7, padx=5, width=10,
-                      activebackground='blue', command=self._get_value_transit)
+        b = tk.Button(self.frame, text="Import\nTable\nProbability", bg="green", height=7, padx=5, width=10,
+                      activebackground='blue', command=self.import_transit_prob)
         b.grid(row=0, column=0)
-        b = tk.Button(self.frame, text="Read data", bg="yellow", height=7, width=10, padx=5,
+        b = tk.Button(self.frame, text="Input Old DS", bg="yellow", height=7, width=10, padx=5,
                       activebackground='blue', command=self.get_ds)
         b.grid(row=0, column=1)
-        b = tk.Button(self.frame, text="In emission", bg="green", height=7, width=10, padx=5,
-                      activebackground='blue', command=self._get_value_emission)
+        b = tk.Button(self.frame, text="Change\nAPI key", bg="green", height=7, width=10, padx=5,
+                      activebackground='blue', command=self.change_api_key)
         b.grid(row=1, column=0)
         b = tk.Button(self.frame, text="Calculate", bg="red", height=7, width=10, padx=5,
                       activebackground='blue', command=self.carry_all_by_EE_sama)
@@ -601,6 +604,35 @@ class Dialog(tk.Tk):
         with open('setting.cfg', 'wb') as configfile:
             config.write(configfile)
 
+    def change_api_key(self):
+        form = ApiDialog(self.master, self.api_key_var)
+        self.wait_window(form.top)
+        if self.api_key_var.get():
+            # self.entry_old_DS.config(state='normal')
+            # self.old_DS.set(self.tmp.get())
+            # self.entry_old_DS.config(state='disabled')
+            self.api_key = self.api_key_var.get()
+        loger.debug('Get API key')
+        config = ConfigParser.ConfigParser()
+        config.read('setting.cfg')
+        if config.has_section('API_KEY'):
+            config.set('API_KEY', 'api_key', self.api_key)
+            # print '- change `root_folder` value -'
+            loger.debug('- change `root_folder` value -')
+        else:
+            config.add_section('API_KEY')
+            config.set('API_KEY', 'api_key', self.api_key)
+            # print '- section `PATH` is not exist -'
+            # loger.error('- section `PATH` is not exist -')
+            # print '- Add section `PATH` and set `root_folder` value'
+            loger.debug('- Add section `PATH` and set `root_folder` value')
+            # loger.info('Root folder: %s' % dir)
+        loger.info('New API key: %s' % self.api_key)
+        with open('setting.cfg', 'wb') as configfile:
+            config.write(configfile)
+
+        self.show_info('Success', 'Api change successfully')
+
     def import_prob(self, section):
         file = askopenfilename()
         if not file:
@@ -635,17 +667,17 @@ class Dialog(tk.Tk):
 
                     for x in range(0, 6, 1):
                         self.matrix_ep[x].delete(0, tk.END)
-                    self.matrix_emission[0][0] = tmp = config['emission_probability']['price_up']['ds_increase']
+                    self.matrix_emission[0][0] = tmp = config['EMISSION_PROBABILITY']['price_up']['ds_increase']
                     self.matrix_ep[0].insert(0, tmp)
-                    self.matrix_emission[0][1] = tmp = config['emission_probability']['price_up']['ds_decrease']
+                    self.matrix_emission[0][1] = tmp = config['EMISSION_PROBABILITY']['price_up']['ds_decrease']
                     self.matrix_ep[1].insert(0, tmp)
-                    self.matrix_emission[1][0] = tmp = config['emission_probability']['price_keep']['ds_increase']
+                    self.matrix_emission[1][0] = tmp = config['EMISSION_PROBABILITY']['price_keep']['ds_increase']
                     self.matrix_ep[2].insert(0, tmp)
-                    self.matrix_emission[1][1] = tmp = config['emission_probability']['price_keep']['ds_decrease']
+                    self.matrix_emission[1][1] = tmp = config['EMISSION_PROBABILITY']['price_keep']['ds_decrease']
                     self.matrix_ep[3].insert(0, tmp)
-                    self.matrix_emission[2][0] = tmp = config['emission_probability']['price_down']['ds_increase']
+                    self.matrix_emission[2][0] = tmp = config['EMISSION_PROBABILITY']['price_down']['ds_increase']
                     self.matrix_ep[4].insert(0, tmp)
-                    self.matrix_emission[2][1] = tmp = config['emission_probability']['price_down']['ds_decrease']
+                    self.matrix_emission[2][1] = tmp = config['EMISSION_PROBABILITY']['price_down']['ds_decrease']
                     self.matrix_ep[5].insert(0, tmp)
                     tkmsg.showinfo('Success', 'Import data success !')
                     return True
@@ -681,9 +713,12 @@ class Dialog(tk.Tk):
             self.show_error('Missing File', '`setting.cfg` is missing')
             return False
         if config.has_section('PATH'):
-            self.data_roor_folder = config.get('PATH', 'root_folder')
+            self.data_root_folder = config.get('PATH', 'root_folder')
             loger.debug('Get root folder success')
             return True
+        if config.has_section('API_KEY'):
+            self.api_key = config.get('API_KEY', 'api_key')
+            loger.info('API key is ready for use: %s' % self.api_key)
 
         return False
 
@@ -718,7 +753,7 @@ class Dialog(tk.Tk):
 
         # logging.debug('%s_%s' % org, des)
 
-        create_session = rdp.create_session(path=self.data_roor_folder, day=day, org=org, des=des)
+        create_session = rdp.create_session(path=self.data_root_folder, day=day, org=org, des=des)
         if create_session['status'] == 2:
             return True
         logging.debug('pause for getting session')
@@ -744,7 +779,7 @@ class Dialog(tk.Tk):
         logging.debug('Run testing ...')
         # date = self.day_out.get().replace('-', '')
         date = datetime.now().strftime('%Y%m%d')
-        path = self.data_roor_folder + '/' + date
+        path = self.data_root_folder + '/' + date
         # Testing `origin place`
         org = self.port_dep.get()
         if org != 'TYOA':
@@ -768,10 +803,17 @@ class Dialog(tk.Tk):
         return True
 
     def get_data(self):
-        rdp.get_live_data(self.data_roor_folder, self.session, self.day_out.get())
+        rdp.get_live_data(self.data_root_folder, self.session, self.day_out.get())
+
+    def cal_log(self):
+        if not self.calculate_prob():
+            return False
+        # write log
+        day = self.day_out.get().replace('-', '')
+        self.write_log_status(self.data_root_folder, day, self.new_state, )
 
     def calculation_from_file(self):
-        h = rdp.calculation_price(self.new_DS.get(), self.old_DS.get())
+        # h = rdp.calculation_price(self.new_DS.get(), self.old_DS.get())
         # path = self.data_roor_folder + '/20161212'
         # file = path + '/live_price/liveprice_TYOA_MMY_20161104.json'
         # rdp.auto_price(path, file, 1, h, self.port_dep.get(), self.port_des.get())
@@ -780,6 +822,28 @@ class Dialog(tk.Tk):
         #     self.write_log_status(self.data_roor_folder,
         #                           self.day_out.get(),
         #                           self.new_state, )
+        file = rdp.get_live_data(self.data_root_folder, self.session['session'],
+                                 self.day_out.get(), self.port_dep.get(), self.port_des.get())
+
+        if not file:
+            self.show_error('Get data fail', 'Something wrong was happend, may be try other port !')
+            return False
+        # file = path + '/live_price/liveprice_20161021.json'
+        status = 0
+        if self.new_state == 'Price_up':
+            status = 1
+        if self.new_state == 'Price_down':
+            status = -1
+        if status != 0:
+            h = rdp.calculation_price(self.new_DS.get(), self.old_DS.get())
+            tmp = self.result_text.get() + '\n Base factor = %f' % h
+            self.result_text.set(tmp)
+            date = self.day_out.get().replace('-', '')
+            path = self.data_root_folder + '/' + date  # '/20161209'
+            rdp.auto_price(path, file, status, h, self.port_dep.get(), self.port_des.get())
+            logging.debug('Auto pricing finish !')
+            self.show_info('Success', 'Pricing has been done !')
+            return True
 
     def carry_all_by_EE_sama(self):
         # check if data valid
@@ -792,14 +856,14 @@ class Dialog(tk.Tk):
             return False
         # write log
         day = self.day_out.get().replace('-', '')
-        self.write_log_status(self.data_roor_folder, day, self.new_state, )
+        self.write_log_status(self.data_root_folder, day, self.new_state, )
         # get data
         if not self.get_live_data():
             self.show_info('Fail', 'Fail on get live data!')
             return False
         # leep a bit after create session
         # time.sleep(1.7)
-        file = rdp.get_live_data(self.data_roor_folder, self.session['session'],
+        file = rdp.get_live_data(self.data_root_folder, self.session['session'],
                                  self.day_out.get(), self.port_dep.get(), self.port_des.get())
         if not file:
             self.show_error('Get data fail', 'Something wrong was happend, may be try other port !')
@@ -815,7 +879,7 @@ class Dialog(tk.Tk):
             tmp = self.result_text.get() + '\n Base factor = %f' % h
             self.result_text.set(tmp)
             date = self.day_out.get().replace('-', '')
-            path = self.data_roor_folder + '/' + date  # '/20161209'
+            path = self.data_root_folder + '/' + date  # '/20161209'
             rdp.auto_price(path, file, status, h, self.port_dep.get(), self.port_des.get())
             logging.debug('Auto pricing finish !')
             self.show_info('Success', 'Pricing has been done !')

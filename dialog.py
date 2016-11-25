@@ -57,3 +57,20 @@ class InfoDialog:
             tkmsg.showerror(title='Input Error', message='Invalid input for day search number, '
                                                          'please insert a integer number')
             return False
+
+
+class ApiDialog(InfoDialog):
+    def __init__(self, parent, var):
+        InfoDialog.__init__(self, parent, var)
+
+    def ok(self):
+        try:
+            k = self.e.get()
+            self.var.set(k)
+            loger.info("value is %s" % k)
+            self.top.destroy()
+            return True
+        except ValueError:
+            tkmsg.showerror(title='Input Error', message='Invalid input for day search number, '
+                                                         'please insert a integer number')
+            return False

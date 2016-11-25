@@ -348,12 +348,12 @@ def calculation_price(new_ds, old_ds, *args, **kwargs):
     # base = (abs(new_ds-old_ds)+1)*new_ds*old_ds
     if new_ds - old_ds == 0:
         new_ds += 1
-    delta = abs(new_ds - old_ds) + math.e  # make sure that ln(delta) > 1
+    delta = (abs(new_ds - old_ds) + 1)*math.e  # make sure that ln(delta) > 1
     ln_new = math.log(new_ds)
-    ln_delta = math.log(new_ds)
+    ln_delta = math.log(delta)
     base = delta*new_ds
     x = (float(new_ds) + 1) / (float(old_ds) + 1)
-    h = math.log(x, base)*ln_delta/100
+    h = math.log(x, base)*ln_new/(100*ln_delta)
     loger.info('h value %f'%h)
     price_new = h*14390
     loger.info('Price from 14390 > %.2f' % price_new)

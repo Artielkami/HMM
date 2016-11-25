@@ -1,0 +1,7 @@
+configobj==5.0.6
+lxml==3.4.4
+PyYAML==3.11
+requests==2.10.0
+simplejson==3.5.3
+urllib3==1.15.1
+virtualenv==15.0.1

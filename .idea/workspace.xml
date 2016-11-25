@@ -1,25 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/app.py" line="337" mnemonic="5" />
-  </component>
   <component name="ChangeListManager">
     <list default="true" id="bb3692b4-08dc-4475-bb39-0290e8e5f5d4" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/20161209/log_search/log_TYOA_ISG.log" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/20161219/log_search/log_TYOA_MMY.log" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/data/20161219/result/result_TYOA_MMY_20161117_113541.json" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/20161211/live_price/liveprice_TYOA_OKA_20161104.json" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/20161211/live_price/liveprice_TYOA_SHB_20161104.json" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/20161211/result/result_TYOA_OKA_20161104_154633.json" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/20161211/result/result_TYOA_SHB_20161104_155721.json" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/data/20161212/result/result_TYOA_MMY_20161104_082757.json" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/data/20161212/live_price/liveprice_TYOA_MMY_20161104.json" afterPath="$PROJECT_DIR$/data/20161219/live_price/liveprice_TYOA_MMY_20161117.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/requirements.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/setup.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/dataSources.ids" afterPath="$PROJECT_DIR$/.idea/dataSources.ids" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app.py" afterPath="$PROJECT_DIR$/app.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config.yml" afterPath="$PROJECT_DIR$/config.yml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dialog.py" afterPath="$PROJECT_DIR$/dialog.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/read_data_price.py" afterPath="$PROJECT_DIR$/read_data_price.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/setting.cfg" afterPath="$PROJECT_DIR$/setting.cfg" />
     </list>
     <list id="d7025cc0-07ac-4025-8692-0f5a33235598" name="Revert: #326 small fix" comment="not thong" />
     <ignored path="HMM.iws" />
@@ -35,7 +26,7 @@
   <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/HMM$main.coverage" NAME="main Coverage Results" MODIFIED="1473997568042" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/HMM$hmm.coverage" NAME="hmm Coverage Results" MODIFIED="1479368394919" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/HMM$hmm.coverage" NAME="hmm Coverage Results" MODIFIED="1480056961512" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/HMM$Get2Travel.coverage" NAME="Get2Travel Coverage Results" MODIFIED="1474515144670" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../Get2Travel" />
     <SUITE FILE_PATH="coverage/HMM$viterbi.coverage" NAME="viterbi Coverage Results" MODIFIED="1473997510029" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
@@ -61,7 +52,7 @@
       <file leaf-file-name="main.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="655">
+            <state relative-caret-position="487">
               <caret line="75" column="0" selection-start-line="75" selection-start-column="0" selection-end-line="75" selection-end-column="0" />
               <folding>
                 <element signature="e#42#79#0" expanded="true" />
@@ -70,11 +61,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="read_data_price.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="read_data_price.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/read_data_price.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="50">
-              <caret line="346" column="16" selection-start-line="346" selection-start-column="16" selection-end-line="346" selection-end-column="16" />
+            <state relative-caret-position="273">
+              <caret line="354" column="21" selection-start-line="354" selection-start-column="15" selection-end-line="354" selection-end-column="21" />
               <folding>
                 <element signature="e#42#57#0" expanded="true" />
               </folding>
@@ -82,14 +73,35 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="viterbi.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/viterbi.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="231">
+              <caret line="20" column="25" selection-start-line="20" selection-start-column="25" selection-end-line="20" selection-end-column="25" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="dialog.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/dialog.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="483">
-              <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+            <state relative-caret-position="449">
+              <caret line="62" column="35" selection-start-line="62" selection-start-column="35" selection-end-line="62" selection-end-column="35" />
               <folding>
                 <element signature="e#0#20#0" expanded="true" />
+                <marker date="1480046771710" expanded="true" signature="1760:1807" ph="..." />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="setting.cfg" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/setting.cfg">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="126">
+              <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -97,33 +109,22 @@
       <file leaf-file-name="app.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="378">
-              <caret line="819" column="23" selection-start-line="819" selection-start-column="23" selection-end-line="819" selection-end-column="23" />
+            <state relative-caret-position="147">
+              <caret line="7" column="18" selection-start-line="7" selection-start-column="11" selection-end-line="7" selection-end-column="18" />
               <folding>
-                <element signature="e#13245#13598#0" expanded="false" />
-                <element signature="e#13642#14004#0" expanded="false" />
-                <element signature="e#14049#14413#0" expanded="false" />
-                <element signature="e#14470#15278#0" expanded="false" />
-                <element signature="e#16205#17320#0" expanded="false" />
-                <element signature="e#17380#19273#0" expanded="false" />
-                <element signature="e#21725#22737#0" expanded="false" />
-                <element signature="e#22791#23717#0" expanded="false" />
-                <element signature="e#23763#27160#0" expanded="false" />
-                <element signature="e#27191#27307#0" expanded="false" />
-                <element signature="e#27339#27394#0" expanded="false" />
-                <element signature="e#27427#27611#0" expanded="false" />
-                <element signature="e#27671#28180#0" expanded="false" />
+                <element signature="e#6552#8098#0" expanded="false" />
+                <element signature="e#11491#11783#0" expanded="false" />
+                <element signature="e#11815#12015#0" expanded="false" />
+                <element signature="e#12087#13387#0" expanded="false" />
+                <element signature="e#13554#13907#0" expanded="false" />
+                <element signature="e#14358#14722#0" expanded="false" />
+                <element signature="e#14779#15587#0" expanded="false" />
+                <element signature="e#17703#19636#0" expanded="false" />
+                <element signature="e#19698#21407#0" expanded="false" />
+                <element signature="e#28879#28995#0" expanded="false" />
+                <element signature="e#29027#29082#0" expanded="false" />
+                <element signature="e#29115#29299#0" expanded="false" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="liveprice_TYOA_MMY_20161117.json" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/data/20161219/live_price/liveprice_TYOA_MMY_20161117.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="101">
-              <caret line="3290" column="34" selection-start-line="3290" selection-start-column="34" selection-end-line="3290" selection-end-column="34" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -134,6 +135,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Python Script" />
+        <option value="Setup Script" />
       </list>
     </option>
   </component>
@@ -143,12 +145,10 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/../Get2Travel/search/models.py" />
         <option value="$PROJECT_DIR$/../Get2Travel/search/main.py" />
         <option value="$PROJECT_DIR$/Dialog.py" />
         <option value="$PROJECT_DIR$/tmp" />
         <option value="$PROJECT_DIR$/tmp.ini" />
-        <option value="$PROJECT_DIR$/config.yml" />
         <option value="$PROJECT_DIR$/data_log.yml" />
         <option value="$PROJECT_DIR$/__init__" />
         <option value="$PROJECT_DIR$/sup/__init__.py" />
@@ -178,11 +178,9 @@
         <option value="$PROJECT_DIR$/20161212/result/result_TYOA_ISG or MMY_20161109_170647.json" />
         <option value="$PROJECT_DIR$/20161212/result/result_TYOA_ISG or MMY_20161110_101930.json" />
         <option value="$PROJECT_DIR$/db/__init__.py" />
-        <option value="$PROJECT_DIR$/setting.cfg" />
         <option value="$PROJECT_DIR$/db/db_master.py" />
         <option value="$PROJECT_DIR$/main.py" />
         <option value="$PROJECT_DIR$/data/20161209/log_search/log_20161111_TYOA_ISG.log" />
-        <option value="$PROJECT_DIR$/dialog.py" />
         <option value="$PROJECT_DIR$/data/20161215/live_price/liveprice_TYOA_ISG_20161117.json" />
         <option value="$PROJECT_DIR$/data/20161221/result/result_TYOA_ISG_20161117_100158.json" />
         <option value="$PROJECT_DIR$/data/20161221/live_price/liveprice_TYOA_ISG_20161117.json" />
@@ -192,8 +190,12 @@
         <option value="$PROJECT_DIR$/data/20161219/result/result_TYOA_MMY_20161117_113541.json" />
         <option value="$PROJECT_DIR$/data/20161219/log_search/log_TYOA_MMY.log" />
         <option value="$PROJECT_DIR$/data/20161219/result/result_TYOA_MMY_20161117_113924.json" />
-        <option value="$PROJECT_DIR$/read_data_price.py" />
+        <option value="$PROJECT_DIR$/config.yml" />
+        <option value="$PROJECT_DIR$/dialog.py" />
+        <option value="$PROJECT_DIR$/setting.cfg" />
         <option value="$PROJECT_DIR$/app.py" />
+        <option value="$PROJECT_DIR$/requirements.txt" />
+        <option value="$PROJECT_DIR$/read_data_price.py" />
       </list>
     </option>
   </component>
@@ -253,12 +255,17 @@
     </navigator>
     <panes>
       <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
             <PATH_ELEMENT>
               <option name="myItemId" value="HMM" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -285,9 +292,74 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HMM" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HMM" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="data" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="20161209" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="result" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HMM" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HMM" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="data" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="20161209" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="log_search" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HMM" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="HMM" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="data" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="20161209" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="live_price" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -712,7 +784,21 @@
       <option name="project" value="LOCAL" />
       <updated>1478858414240</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="ultimate update 1">
+      <created>1479377481485</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1479377481485</updated>
+    </task>
+    <task id="LOCAL-00019" summary="ultimate update 2&#10;">
+      <created>1479982283767</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1479982283767</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TodoView">
@@ -733,15 +819,15 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35738832" sideWeight="0.5107181" order="12" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32875144" sideWeight="0.49785638" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32875144" sideWeight="0.49785638" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32954547" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32875144" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32875144" sideWeight="0.49356914" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20310825" sideWeight="0.48977274" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2084673" sideWeight="0.48977274" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Tail" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329582" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32875144" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21007502" sideWeight="0.51022726" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.35509735" sideWeight="0.4892819" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.35166094" sideWeight="0.4892819" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -761,7 +847,7 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32875144" sideWeight="0.49785638" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32954547" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32875144" sideWeight="0.49356914" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20310825" sideWeight="0.48977274" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2084673" sideWeight="0.48977274" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Tail" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329582" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -797,11 +883,19 @@
     <MESSAGE value="bull shjt" />
     <MESSAGE value="bull shjt 2" />
     <MESSAGE value="ultimate update 1" />
-    <option name="LAST_COMMIT_MESSAGE" value="ultimate update 1" />
+    <MESSAGE value="ultimate update 2&#10;" />
+    <option name="LAST_COMMIT_MESSAGE" value="ultimate update 2&#10;" />
     <option name="PRESELECT_EXISTING_CHANGELIST" value="false" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/dialog.py</url>
+          <line>66</line>
+          <option name="timeStamp" value="157" />
+        </line-breakpoint>
+      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">
@@ -809,19 +903,11 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="156" />
+      <option name="time" value="162" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/20161207/live_price/liveprice_20161101.json" />
-    <entry file="file://$PROJECT_DIR$/data/20161209/result/result_20161101162006.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="63">
-          <caret line="3" column="55" selection-start-line="3" selection-start-column="55" selection-end-line="3" selection-end-column="55" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/20161212/live_price/liveprice_20161101.json" />
     <entry file="file://$PROJECT_DIR$/20161213/live_price/liveprice_20161101.json" />
     <entry file="file://$PROJECT_DIR$/20161214/live_price/liveprice_20161101.json" />
@@ -851,57 +937,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/viterbi.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
-          <caret line="18" column="36" selection-start-line="18" selection-start-column="36" selection-end-line="18" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/20161211/live_price/liveprice_TYOA_OKA_20161104.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/20161211/result/result_TYOA_OKA_20161104_154633.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data_test.yml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="21">
-          <caret line="1" column="20" selection-start-line="1" selection-start-column="20" selection-end-line="1" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/config.yml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="231">
-          <caret line="11" column="19" selection-start-line="11" selection-start-column="19" selection-end-line="11" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/data/20161211/live_price/liveprice_TYOA_OKA_20161104.json" />
+    <entry file="file://$PROJECT_DIR$/data/20161211/result/result_TYOA_OKA_20161104_154633.json" />
     <entry file="file://$PROJECT_DIR$/20161212/result/result_TYOA_ISG or MMY_20161109_164542.json" />
     <entry file="file://$PROJECT_DIR$/20161212/result/result_TYOA_ISG or MMY_20161109_164431.json" />
-    <entry file="file://$PROJECT_DIR$/data/20161212/result/result_TYOA_MMY_20161104_082757.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-885">
-          <caret line="5" column="24" selection-start-line="5" selection-start-column="24" selection-end-line="5" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/data/20161212/result/result_TYOA_MMY_20161104_082757.json" />
     <entry file="file://$PROJECT_DIR$/20161212/result/result_TYOA_ISG or MMY_20161109_165255.json" />
     <entry file="file://$PROJECT_DIR$/20161212/result/result_TYOA_ISG or MMY_20161109_170647.json" />
     <entry file="file:///usr/lib64/python2.7/logging/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="8946">
           <caret line="426" column="49" selection-start-line="426" selection-start-column="30" selection-end-line="426" selection-end-column="49" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -910,7 +956,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="126">
           <caret line="21" column="9" selection-start-line="21" selection-start-column="9" selection-end-line="21" selection-end-column="9" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -918,7 +963,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -926,7 +970,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="201">
           <caret line="516" column="8" selection-start-line="516" selection-start-column="8" selection-end-line="516" selection-end-column="8" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -934,7 +977,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="348">
           <caret line="509" column="0" selection-start-line="509" selection-start-column="0" selection-end-line="509" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -942,7 +984,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="705">
           <caret line="1552" column="21" selection-start-line="1552" selection-start-column="16" selection-end-line="1552" selection-end-column="21" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -950,25 +991,10 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="78">
           <caret line="27" column="42" selection-start-line="27" selection-start-column="42" selection-end-line="27" selection-end-column="42" />
-          <folding>
-            <element signature="e#0#37#0" expanded="true" />
-            <marker date="1478838592247" expanded="true" signature="1034:1055" ph="SELECT COUNT... " />
-            <marker date="1478838592247" expanded="true" signature="1034:1056" ph="SELECT FEE_C... DOM_AIR_HANDLING_FEE_MSTWHERE" />
-            <marker date="1478838592247" expanded="true" signature="1034:1106" ph="SELECT COUNT... " />
-            <marker date="1478838592247" expanded="true" signature="1034:1431" ph="SELECT COUNT... " />
-            <marker date="1478838592247" expanded="true" signature="1219:1233" ph="SELECT * FRO... " />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/20161209/log_search/log_20161111_TYOA_ISG or MMY.log">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/data/20161209/log_search/log_20161111_TYOA_ISG or MMY.log" />
     <entry file="file:///usr/lib64/python2.7/lib-tk/Tkinter.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="617">
@@ -977,43 +1003,19 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/setting.cfg">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="21">
-          <caret line="1" column="51" selection-start-line="1" selection-start-column="51" selection-end-line="1" selection-end-column="51" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data/20161209/log_search/log_TYOA_ISG.log">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="42">
           <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/20161212/live_price/liveprice_TYOA_MMY_20161104.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="336">
-          <caret line="19" column="21" selection-start-line="19" selection-start-column="21" selection-end-line="19" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/20161215/live_price/liveprice_TYOA_ISG_20161117.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="147">
-          <caret line="7" column="27" selection-start-line="7" selection-start-column="27" selection-end-line="7" selection-end-column="27" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/data/20161212/live_price/liveprice_TYOA_MMY_20161104.json" />
+    <entry file="file://$PROJECT_DIR$/data/20161215/live_price/liveprice_TYOA_ISG_20161117.json" />
     <entry file="file://$PROJECT_DIR$/data/20161221/live_price/liveprice_TYOA_ISG_20161117.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="189">
           <caret line="9" column="19" selection-start-line="9" selection-start-column="19" selection-end-line="9" selection-end-column="19" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1021,7 +1023,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="210">
           <caret line="10" column="22" selection-start-line="10" selection-start-column="22" selection-end-line="10" selection-end-column="22" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1029,17 +1030,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/dialog.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="483">
-          <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#20#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1047,23 +1037,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/20161226/result/result_TYOA_ISG_20161117_105642.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="63">
-          <caret line="3" column="36" selection-start-line="3" selection-start-column="36" selection-end-line="3" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/data/20161226/result/result_TYOA_ISG_20161117_105642.json" />
     <entry file="file://$PROJECT_DIR$/data/20161226/live_price/liveprice_TYOA_ISG_20161117.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="147">
           <caret line="7" column="24" selection-start-line="7" selection-start-column="19" selection-end-line="7" selection-end-column="24" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1071,17 +1052,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="655">
-          <caret line="75" column="0" selection-start-line="75" selection-start-column="0" selection-end-line="75" selection-end-column="0" />
-          <folding>
-            <element signature="e#42#79#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1089,15 +1059,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-2567">
           <caret line="3" column="31" selection-start-line="3" selection-start-column="31" selection-end-line="3" selection-end-column="31" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/20161219/log_search/log_TYOA_MMY.log">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="42">
-          <caret line="2" column="39" selection-start-line="2" selection-start-column="39" selection-end-line="2" selection-end-column="39" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1105,47 +1066,120 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-210">
           <caret line="5" column="20" selection-start-line="5" selection-start-column="15" selection-end-line="5" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/20161219/log_search/log_TYOA_MMY.log">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="42">
+          <caret line="2" column="23" selection-start-line="2" selection-start-column="20" selection-end-line="2" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/20161219/live_price/liveprice_TYOA_MMY_20161117.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="99">
+          <caret line="3362" column="20" selection-start-line="3362" selection-start-column="20" selection-end-line="3362" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data_test.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="21">
+          <caret line="1" column="20" selection-start-line="1" selection-start-column="20" selection-end-line="1" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="487">
+          <caret line="75" column="0" selection-start-line="75" selection-start-column="0" selection-end-line="75" selection-end-column="0" />
+          <folding>
+            <element signature="e#42#79#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/dialog.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="449">
+          <caret line="62" column="35" selection-start-line="62" selection-start-column="35" selection-end-line="62" selection-end-column="35" />
+          <folding>
+            <element signature="e#0#20#0" expanded="true" />
+            <marker date="1480046771710" expanded="true" signature="1760:1807" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/setup.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="147">
+          <caret line="7" column="15" selection-start-line="7" selection-start-column="15" selection-end-line="7" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/requirements.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="147">
+          <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/setting.cfg">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="147">
+          <caret line="7" column="18" selection-start-line="7" selection-start-column="11" selection-end-line="7" selection-end-column="18" />
+          <folding>
+            <element signature="e#6552#8098#0" expanded="false" />
+            <element signature="e#11491#11783#0" expanded="false" />
+            <element signature="e#11815#12015#0" expanded="false" />
+            <element signature="e#12087#13387#0" expanded="false" />
+            <element signature="e#13554#13907#0" expanded="false" />
+            <element signature="e#14358#14722#0" expanded="false" />
+            <element signature="e#14779#15587#0" expanded="false" />
+            <element signature="e#17703#19636#0" expanded="false" />
+            <element signature="e#19698#21407#0" expanded="false" />
+            <element signature="e#28879#28995#0" expanded="false" />
+            <element signature="e#29027#29082#0" expanded="false" />
+            <element signature="e#29115#29299#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/viterbi.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="231">
+          <caret line="20" column="25" selection-start-line="20" selection-start-column="25" selection-end-line="20" selection-end-column="25" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/read_data_price.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="50">
-          <caret line="346" column="16" selection-start-line="346" selection-start-column="16" selection-end-line="346" selection-end-column="16" />
+        <state relative-caret-position="273">
+          <caret line="354" column="21" selection-start-line="354" selection-start-column="15" selection-end-line="354" selection-end-column="21" />
           <folding>
             <element signature="e#42#57#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
-          <caret line="819" column="23" selection-start-line="819" selection-start-column="23" selection-end-line="819" selection-end-column="23" />
-          <folding>
-            <element signature="e#13245#13598#0" expanded="false" />
-            <element signature="e#13642#14004#0" expanded="false" />
-            <element signature="e#14049#14413#0" expanded="false" />
-            <element signature="e#14470#15278#0" expanded="false" />
-            <element signature="e#16205#17320#0" expanded="false" />
-            <element signature="e#17380#19273#0" expanded="false" />
-            <element signature="e#21725#22737#0" expanded="false" />
-            <element signature="e#22791#23717#0" expanded="false" />
-            <element signature="e#23763#27160#0" expanded="false" />
-            <element signature="e#27191#27307#0" expanded="false" />
-            <element signature="e#27339#27394#0" expanded="false" />
-            <element signature="e#27427#27611#0" expanded="false" />
-            <element signature="e#27671#28180#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/20161219/live_price/liveprice_TYOA_MMY_20161117.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="101">
-          <caret line="3290" column="34" selection-start-line="3290" selection-start-column="34" selection-end-line="3290" selection-end-column="34" />
-          <folding />
         </state>
       </provider>
     </entry>
