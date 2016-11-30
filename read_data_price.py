@@ -1,5 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+import ConfigParser
+
 import requests
 import json
 import os
@@ -13,6 +15,19 @@ loger = logging.getLogger('{:^12s}'.format('Read_Data'))
 DENA_TRAVEL = 1945844
 URL_LIVE_SKYCANNER_API = 'http://partners.api.skyscanner.net/apiservices/pricing/v1.0'
 API_KEY = 'hi198240969190851351185584361476'
+
+
+def get_api_key():
+    config = ConfigParser.ConfigParser()
+    data = config.read('setting.cfg')
+    # raise error if missing file setting
+    if not len(data):
+        loger.error('Missing file `setting.cfg` !')
+        return False
+    if config.has_section('API_KEY'):
+        loger.info('get api key success')
+        return config.get('API_KEY', 'api_key')
+    return False
 
 
 def read_price(path, day, *args, **kwargs):
@@ -38,8 +53,9 @@ def create_session(path, day, org, des, *args, **kwargs):
     }
     # real: hi198240969190851351185584361476
     # test: prtl6749387986743898559646983194
+    apiKey = get_api_key()
     form = {
-        'apiKey': 'prtl6749387986743898559646983194',
+        'apiKey': apiKey,
         'currency': 'JPY',
         'locale': 'jp-JP',
         'country': 'JP',
@@ -88,9 +104,9 @@ def get_live_data(path, url, day, *args, **kwargs):
     # }     hi684525042063916181915830535816
     # real: hi198240969190851351185584361476
     # test: prtl6749387986743898559646983194
-
+    apiKey = get_api_key()
     form = {
-        'apiKey': 'prtl6749387986743898559646983194',
+        'apiKey': apiKey,
     }
     try:
         folder = path + '/' + day.replace('-', '')
